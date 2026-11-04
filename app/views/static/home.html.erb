@@ -51,9 +51,11 @@
         Mascot by <a href="<%= @mascot_artist_url %>" target="_blank" rel="noopener noreferrer"><%= @mascot_artist_name %></a>
       <% end %>
     </div>
+    <% if Mascot.active_for_browser.size > 1 %>
     <button type="button" id="mascot-swap" class="st-button">
       Swap Mascot
     </button>
+    <% end %>
     <noscript>
       <style type="text/css">
         #mascot-swap { display: none; }
