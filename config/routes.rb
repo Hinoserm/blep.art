@@ -195,7 +195,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :takedowns, except: %i[new create] do
+  resources :takedowns do
     collection do
       post :count_matching_posts
     end

@@ -88,6 +88,27 @@ RSpec.describe TakedownsController do
   # GET /takedowns/new — new
   # ---------------------------------------------------------------------------
 
+  describe "GET /takedowns/new" do
+    it "returns 200 for anonymous when takedowns are enabled" do
+      get new_takedown_path
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "blocks access when takedowns are disabled" do
+      allow(Security::Lockdown).to receive(:takedowns_disabled?).and_return(true)
+      get new_takedown_path
+      # Anonymous + HTML + GET → redirect to login
+      expect(response).to redirect_to(new_session_path(url: new_takedown_path))
+    end
+
+    it "returns 403 for a signed-in member when takedowns are disabled" do
+      sign_in_as member
+      allow(Security::Lockdown).to receive(:takedowns_disabled?).and_return(true)
+      get new_takedown_path
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
   # ---------------------------------------------------------------------------
   # GET /takedowns/:id/edit — edit
   # ---------------------------------------------------------------------------
@@ -115,6 +136,39 @@ RSpec.describe TakedownsController do
   # ---------------------------------------------------------------------------
   # POST /takedowns — create
   # ---------------------------------------------------------------------------
+
+  describe "POST /takedowns" do
+    let(:valid_params) do
+      { takedown: { email: "dmca@example.com", reason: "This infringes my copyright.", instructions: "Remove all copies." } }
+    end
+
+    it "creates a takedown and redirects to show with the vericode" do
+      expect { post takedowns_path, params: valid_params }.to change(Takedown, :count).by(1)
+      expect(response).to redirect_to(takedown_path(id: Takedown.last.id, code: Takedown.last.vericode))
+    end
+
+    it "re-renders new when validation fails" do
+      expect do
+        post takedowns_path, params: { takedown: { email: "", reason: "", instructions: "" } }
+      end.not_to change(Takedown, :count)
+      expect(response).to have_http_status(:ok)
+    end
+
+    context "when takedowns are disabled" do
+      before { allow(Security::Lockdown).to receive(:takedowns_disabled?).and_return(true) }
+
+      it "redirects anonymous to login" do
+        post takedowns_path, params: valid_params
+        expect(response).to redirect_to(new_session_path)
+      end
+
+      it "returns 403 for a signed-in member" do
+        sign_in_as member
+        post takedowns_path, params: valid_params
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+  end
 
   # ---------------------------------------------------------------------------
   # PATCH /takedowns/:id — update

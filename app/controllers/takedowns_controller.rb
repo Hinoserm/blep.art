@@ -3,6 +3,7 @@
 class TakedownsController < ApplicationController
   respond_to :html, :json
   before_action :can_handle_takedowns_only, only: %i[update edit destroy add_by_ids add_by_tags count_matching_posts remove_by_ids clear_posts]
+  before_action :ensure_takedowns_enabled, only: %i[new create]
 
   def index
     @takedowns = Takedown.search(search_params).paginate(params[:page], limit: params[:limit])
@@ -15,11 +16,29 @@ class TakedownsController < ApplicationController
     respond_with(@takedown, @show_instructions)
   end
 
+  def new
+    @wiki = WikiPage.titled("blep:takedown_new")
+    @wiki = WikiPage.new(body: "Wiki page \"blep:takedown_new\" not found.") if @wiki.blank?
+
+    @takedown = Takedown.new
+    respond_with(@takedown)
+  end
 
   def edit
     @takedown = Takedown.find(params[:id])
   end
 
+  def create
+    @takedown = Takedown.create(takedown_params)
+    flash[:notice] = @takedown.errors.count > 0 ? @takedown.errors.full_messages.join(". ") : "Takedown created"
+    if @takedown.errors.count > 0
+      @wiki = WikiPage.titled("blep:takedown_new")
+      @wiki = WikiPage.new(body: "Wiki page \"blep:takedown_new\" not found.") if @wiki.blank?
+      respond_with(@takedown)
+    else
+      redirect_to(takedown_path(id: @takedown.id, code: @takedown.vericode))
+    end
+  end
 
   def update
     @takedown = Takedown.find(params[:id])
@@ -96,5 +115,9 @@ class TakedownsController < ApplicationController
       permitted_params << %i[notes del_post_ids status]
     end
     params.require(:takedown).permit(*permitted_params, post_ids: [])
+  end
+
+  def ensure_takedowns_enabled
+    access_denied if Security::Lockdown.takedowns_disabled?
   end
 end
