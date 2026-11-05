@@ -81,6 +81,7 @@ Rails.application.routes.draw do
         put :enact
         put :uploads_min_level
         put :uploads_hide_pending
+        put :wait_limits
         put :maintenance
       end
     end

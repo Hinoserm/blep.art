@@ -1,60 +1,99 @@
 <div id="c-staff-security">
   <div id="a-index">
-
     <h1>Security</h1>
 
+    <div class="security-grid">
+      <section class="settings-section">
+        <h2>Lockdown</h2>
+        <p class="settings-hint">Turn parts of the site off for everyone except staff. Read-only mode turns everything below off at once.</p>
+
+        <%= custom_form_for(:panic, url: panic_staff_security_index_path, method: :put, html: { class: "panic-form" }) do |f| %>
+          <%= f.button :submit, value: "Enable Read-Only Mode", class: "button btn-danger" %>
+        <% end %>
+
+        <%= custom_form_for(:lockdown, url: enact_staff_security_index_path, method: :put, html: { class: "lockdown-form" }) do |f| %>
+          <p class="settings-hint">Checked means disabled.</p>
+          <div class="lockdown-toggles">
+            <%= f.input :uploads, as: :boolean, label: "Uploads", input_html: { checked: Security::Lockdown.uploads_disabled? ? "checked" : "" } %>
+            <%= f.input :post_replacements, as: :boolean, label: "Post Replacements", input_html: { checked: Security::Lockdown.post_replacements_disabled? ? "checked" : "" } %>
+            <%= f.input :pools, as: :boolean, label: "Pools", input_html: { checked: Security::Lockdown.pools_disabled? ? "checked" : "" } %>
+            <%= f.input :post_sets, as: :boolean, label: "Post Sets", input_html: { checked: Security::Lockdown.post_sets_disabled? ? "checked" : "" } %>
+            <%= f.input :comments, as: :boolean, label: "Comments", input_html: { checked: Security::Lockdown.comments_disabled? ? "checked" : "" } %>
+            <%= f.input :forums, as: :boolean, label: "Forums", input_html: { checked: Security::Lockdown.forums_disabled? ? "checked" : "" } %>
+            <%= f.input :blips, as: :boolean, label: "Blips", input_html: { checked: Security::Lockdown.blips_disabled? ? "checked" : "" } %>
+            <%= f.input :aiburs, as: :boolean, label: "AIBURs", input_html: { checked: Security::Lockdown.aiburs_disabled? ? "checked" : "" } %>
+            <%= f.input :favorites, as: :boolean, label: "Favorites", input_html: { checked: Security::Lockdown.favorites_disabled? ? "checked" : "" } %>
+            <%= f.input :votes, as: :boolean, label: "Votes", input_html: { checked: Security::Lockdown.votes_disabled? ? "checked" : "" } %>
+            <%= f.input :takedowns, as: :boolean, label: "Takedowns", input_html: { checked: Security::Lockdown.takedowns_disabled? ? "checked" : "" } %>
+          </div>
+          <%= f.button :submit, value: "Save Lockdown" %>
+        <% end %>
+      </section>
+
+      <section class="settings-section">
+        <h2>Uploads</h2>
+        <p class="settings-current">Uploads are permitted for <b><%= User.level_string(Security::Lockdown.uploads_min_level) %></b> and up.</p>
+        <%= custom_form_for(:uploads_min_level, url: uploads_min_level_staff_security_index_path, method: :put) do |f| %>
+          <%= f.input :min_level, label: "Minimum level", collection: User.level_hash.select { |_k, v| v >= UserLevel::MEMBER }.to_a, selected: Security::Lockdown.uploads_min_level %>
+          <%= f.button :submit, value: "Save" %>
+        <% end %>
+
+        <h3>Pending Posts</h3>
+        <p class="settings-current">
+          <% if Security::Lockdown.hide_pending_posts_for > 0 %>
+            Unapproved posts are only visible to staff for <b><%= Security::Lockdown.hide_pending_posts_for %></b> hours.
+          <% else %>
+            Unapproved posts are not hidden.
+          <% end %>
+        </p>
+        <%= custom_form_for(:uploads_hide_pending, url: uploads_hide_pending_staff_security_index_path, method: :put) do |f| %>
+          <%= f.input :duration, label: "Hide for", as: :float, hint: "hours; 0 means not hidden", input_html: { value: Security::Lockdown.hide_pending_posts_for } %>
+          <%= f.button :submit, value: "Save" %>
+        <% end %>
+      </section>
+    </div>
+
     <section class="settings-section">
-      <h2>Lockdown</h2>
-      <%= custom_form_for(:panic, url: panic_staff_security_index_path, method: :put, html: { class: "lockdown-form" }) do |f| %>
-        <%= f.button :submit, value: "Enable Read-Only Mode" %>
-      <% end %>
-
-      <%= custom_form_for(:lockdown, url: enact_staff_security_index_path, method: :put, html: { class: "lockdown-form" }) do |f| %>
-        <%= f.input :uploads, as: :boolean, label: "Uploads", input_html: { checked: Security::Lockdown.uploads_disabled? ? "checked" : "" } %>
-        <%= f.input :post_replacements, as: :boolean, label: "Post Replacements", input_html: { checked: Security::Lockdown.post_replacements_disabled? ? "checked" : "" } %>
-        <%= f.input :pools, as: :boolean, label: "Pools", input_html: { checked: Security::Lockdown.pools_disabled? ? "checked" : "" } %>
-        <%= f.input :post_sets, as: :boolean, label: "Post Sets", input_html: { checked: Security::Lockdown.post_sets_disabled? ? "checked" : "" } %>
-        <br />
-        <%= f.input :comments, as: :boolean, label: "Comments", input_html: { checked: Security::Lockdown.comments_disabled? ? "checked" : "" } %>
-        <%= f.input :forums, as: :boolean, label: "Forums", input_html: { checked: Security::Lockdown.forums_disabled? ? "checked" : "" } %>
-        <%= f.input :blips, as: :boolean, label: "Blips", input_html: { checked: Security::Lockdown.blips_disabled? ? "checked" : "" } %>
-        <br />
-        <%= f.input :aiburs, as: :boolean, label: "AIBURs", input_html: { checked: Security::Lockdown.aiburs_disabled? ? "checked" : "" } %>
-        <%= f.input :favorites, as: :boolean, label: "Favorites", input_html: { checked: Security::Lockdown.favorites_disabled? ? "checked" : "" } %>
-        <%= f.input :votes, as: :boolean, label: "Votes", input_html: { checked: Security::Lockdown.votes_disabled? ? "checked" : "" } %>
-        <br />
-        <%= f.input :takedowns, as: :boolean, label: "Takedowns", input_html: { checked: Security::Lockdown.takedowns_disabled? ? "checked" : "" } %>
-        <br />
-        <%= f.button :submit, value: "Submit" %>
-      <% end %>
-    </section>
-
-    <section class="settings-section">
-      <h2>Uploads</h2>
-      Uploads are currently permitted for <b><%= User.level_string(Security::Lockdown.uploads_min_level) %></b> and up.
-      <%= custom_form_for(:uploads_min_level, url: uploads_min_level_staff_security_index_path, method: :put) do |f| %>
-        <%= f.input :min_level, collection: User.level_hash.select { |_k, v| v >= UserLevel::MEMBER }.to_a, selected: Security::Lockdown.uploads_min_level %>
-        <%= f.button :submit, value: "Submit" %>
-      <% end %>
-
-      <h2>Pending Posts</h2>
-      <% if Security::Lockdown.hide_pending_posts_for > 0 %>
-        Unapproved posts are currently only visible to staff for <b><%= Security::Lockdown.hide_pending_posts_for %></b> hours.
-      <% else %>
-        Unapproved posts are currently not hidden.
-      <% end %>
-      <%= custom_form_for(:uploads_hide_pending, url: uploads_hide_pending_staff_security_index_path, method: :put) do |f| %>
-        <%= f.input :duration, as: :float, hint: "in hours", input_html: { value: Security::Lockdown.hide_pending_posts_for } %>
-        <%= f.button :submit, value: "Submit" %>
+      <h2>New Account Wait Limits</h2>
+      <p class="settings-hint">
+        How long after signing up an account has to wait before it can do each of these, in hours.
+        0 means no wait (24 = 1 day, 72 = 3 days, 168 = 7 days). Privileged users and staff skip most of these.
+      </p>
+      <%= form_tag(wait_limits_staff_security_index_path, method: :put, class: "wait-limits-form") do %>
+        <table class="wait-limits">
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Wait (hours)</th>
+              <th class="default">Default</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% Security::Lockdown::WAIT_LIMITS.each do |key, limit| %>
+              <% hours = Security::Lockdown.wait_hours(key) %>
+              <tr class="<%= "changed" if hours != limit[:default] %>">
+                <td><label for="wait_limits_<%= key %>"><%= limit[:label] %></label></td>
+                <td>
+                  <%= number_field_tag("wait_limits[#{key}]", hours, min: 0, step: 1, id: "wait_limits_#{key}") %>
+                  <span class="wait-human">
+                    <% if hours.zero? %>no wait<% elsif (hours % 24).zero? %><%= pluralize(hours / 24, "day") %><% else %><%= pluralize(hours, "hour") %><% end %>
+                  </span>
+                </td>
+                <td class="default"><%= limit[:default] %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+        <%= submit_tag("Save Wait Limits") %>
       <% end %>
     </section>
 
     <section class="settings-section">
       <h2>Exception Log Pruning</h2>
-      Exception logs older than <b>1 year</b> are pruned during daily maintenance.
-      <%= custom_form_for(:maintenance, url: maintenance_staff_security_index_path, method: :put) do |f| %>
+      <p class="settings-current">Exception logs older than <b>1 year</b> are pruned during daily maintenance.</p>
+      <%= custom_form_for(:maintenance, url: maintenance_staff_security_index_path, method: :put, html: { class: "lockdown-form" }) do |f| %>
         <%= f.input :disable_exception_prune, as: :boolean, label: "Disable automatic exception log pruning", input_html: { checked: Setting.disable_exception_prune? ? "checked" : "" } %>
-        <%= f.button :submit, value: "Submit" %>
+        <%= f.button :submit, value: "Save" %>
       <% end %>
     </section>
   </div>

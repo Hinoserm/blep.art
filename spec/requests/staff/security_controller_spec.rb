@@ -243,6 +243,63 @@ RSpec.describe Staff::SecurityController do
   end
 
   # ---------------------------------------------------------------------------
+  # PUT /staff/security/wait_limits
+  # ---------------------------------------------------------------------------
+
+  describe "PUT /staff/security/wait_limits" do
+    it "redirects anonymous to the login page" do
+      put wait_limits_staff_security_index_path, params: { wait_limits: { comment: "0" } }
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "returns 403 for a regular member" do
+      sign_in_as user
+      put wait_limits_staff_security_index_path, params: { wait_limits: { comment: "0" } }
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    context "as admin" do
+      before do
+        sign_in_as admin
+        Security::Lockdown::WAIT_LIMITS.each { |key, limit| Security::Lockdown.set_wait_hours(key, limit[:default]) }
+      end
+
+      it "updates the changed limits and logs one entry per change" do
+        expect do
+          put wait_limits_staff_security_index_path, params: { wait_limits: { upload: "0", comment: "24", forum_post: "72" } }
+        end.to change(StaffAuditLog, :count).by(2)
+        expect(Security::Lockdown.wait_hours(:upload)).to eq(0)
+        expect(Security::Lockdown.wait_hours(:comment)).to eq(24)
+        expect(Security::Lockdown.wait_hours(:forum_post)).to eq(72)
+        expect(StaffAuditLog.where(action: "wait_limit_change").pluck(:values)).to contain_exactly(
+          { "limit" => "upload", "hours" => 0 }, { "limit" => "comment", "hours" => 24 },
+        )
+        expect(response).to redirect_to(staff_security_index_path)
+      end
+
+      it "ignores negative, blank and non-numeric values" do
+        put wait_limits_staff_security_index_path, params: { wait_limits: { upload: "-5", comment: "", blip: "soon" } }
+        expect(Security::Lockdown.wait_hours(:upload)).to eq(168)
+        expect(Security::Lockdown.wait_hours(:comment)).to eq(168)
+        expect(Security::Lockdown.wait_hours(:blip)).to eq(72)
+      end
+
+      it "ignores keys that are not wait limits" do
+        expect do
+          put wait_limits_staff_security_index_path, params: { wait_limits: { uploads_min_level: "0" } }
+        end.not_to change(StaffAuditLog, :count)
+      end
+
+      it "shows every wait limit on the security page" do
+        get staff_security_index_path
+        Security::Lockdown::WAIT_LIMITS.each_key do |key|
+          expect(response.body).to include("wait_limits[#{key}]")
+        end
+      end
+    end
+  end
+
+  # ---------------------------------------------------------------------------
   # PUT /staff/security/uploads_hide_pending
   # ---------------------------------------------------------------------------
 

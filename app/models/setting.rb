@@ -22,6 +22,12 @@ class Setting < RailsSettings::Base
     field :hide_pending_posts_for,  type: :integer, default: 0, validates: { presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 } }
   end
 
+  scope :wait_limits do
+    Security::Lockdown::WAIT_LIMITS.each do |key, limit|
+      field :"#{key}_wait_hours", type: :integer, default: limit[:default], validates: { presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 } }
+    end
+  end
+
   scope :tos do
     field :tos_version, type: :numeric, default: 1, validates: { presence: true, numericality: { only_integer: true, greater_than: 0 } }
   end

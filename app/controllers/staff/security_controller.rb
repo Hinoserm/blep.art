@@ -69,6 +69,18 @@ module Staff
       redirect_to staff_security_index_path
     end
 
+    def wait_limits
+      submitted = params.fetch(:wait_limits, {}).permit(*Security::Lockdown::WAIT_LIMITS.keys)
+      submitted.each do |key, value|
+        next unless value.to_s.match?(/\A\d+\z/)
+        hours = value.to_i
+        next if hours == Security::Lockdown.wait_hours(key)
+        Security::Lockdown.set_wait_hours(key, hours)
+        StaffAuditLog.log(:wait_limit_change, CurrentUser.user, { limit: key, hours: hours })
+      end
+      redirect_to staff_security_index_path
+    end
+
     def maintenance
       params = maintenance_params
 
