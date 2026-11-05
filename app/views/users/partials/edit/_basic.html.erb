@@ -107,6 +107,16 @@
 <!-- Posts -->
 <tab-group name="posts">Posts</tab-group>
 
+<tab-entry tab="<%= tab_name %>" group="posts" class="with-button" search="import copy favorites favourites e6ai">
+  <tab-head>Import favorites from e6ai.net</tab-head>
+  <tab-body>
+    <%= link_to "Import favorites", maintenance_user_e6ai_favorite_import_path, class: "st-button" %>
+  </tab-body>
+  <tab-hint>
+    Copy your public e6ai.net favorites to this account.
+  </tab-hint>
+</tab-entry>
+
 <tab-entry tab="<%= tab_name %>" group="posts" search="default images width fit horizontal vertical sample large original display show scale posts">
   <tab-head><%= form.label :default_image_size, "Default image width" %></tab-head>
   <tab-body>

@@ -1,0 +1,57 @@
+<div id="c-maintenance-user-e6ai-favorite-imports">
+  <div id="a-show">
+    <h1>Import Favorites from e6ai.net</h1>
+
+    <% if @import.nil? || @import.restartable? %>
+      <p>Copy your public favorites from your e6ai.net account to this one. This can only be done once.</p>
+      <p>Your favorites on e6ai.net need to be public. Posts that are not on this site are skipped.</p>
+
+      <% if @import&.display_error.present? %>
+        <p class="e6ai-import-error"><strong>The last attempt failed:</strong> <%= @import.display_error %></p>
+      <% end %>
+
+      <%= form_tag(maintenance_user_e6ai_favorite_import_path) do %>
+        <div class="input">
+          <%= label_tag "e6ai_favorite_import[e6ai_user_id]", "Your e6ai.net user ID" %>
+          <%= text_field_tag "e6ai_favorite_import[e6ai_user_id]", @submitted_user_id.presence || @import&.e6ai_user_id, placeholder: "1234 or https://e6ai.net/users/1234", autocomplete: "off" %>
+          <p class="hint">The number at the end of your e6ai.net profile address.</p>
+        </div>
+        <%= submit_tag "Import favorites" %>
+      <% end %>
+    <% else %>
+      <div id="e6ai-import-progress" data-url="<%= maintenance_user_e6ai_favorite_import_path(format: :json) %>" data-status="<%= @import.status %>">
+        <progress max="100" value="<%= @import.percent %>"></progress>
+        <p class="e6ai-import-status">
+          <% case @import.status %>
+          <% when "queued" %>
+            Waiting to start&hellip;
+          <% when "fetching" %>
+            Fetching from e6ai.net: <%= number_with_delimiter(@import.found_count) %><%= " of #{number_with_delimiter(@import.expected_count)}" if @import.expected_count %> favorites&hellip;
+          <% when "saving" %>
+            Saving <%= number_with_delimiter(@import.found_count) %> favorites&hellip;
+          <% when "done" %>
+            Done. Imported <%= number_with_delimiter(@import.imported_count) %> favorites.
+          <% end %>
+        </p>
+        <% if @import.done? %>
+          <ul class="e6ai-import-summary">
+            <% if @import.already_count.positive? %>
+              <li><%= number_with_delimiter(@import.already_count) %> were already in your favorites.</li>
+            <% end %>
+            <% if @import.missing_count.positive? %>
+              <li><%= number_with_delimiter(@import.missing_count) %> are not on this site and were skipped.</li>
+            <% end %>
+            <% if @import.over_limit_count.positive? %>
+              <li><%= number_with_delimiter(@import.over_limit_count) %> did not fit under your favorite limit; the newest were kept.</li>
+            <% end %>
+          </ul>
+          <p><%= link_to "View your favorites", favorites_path(user_id: CurrentUser.id) %></p>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<% content_for(:page_title) do %>
+  Import Favorites from e6ai.net
+<% end %>

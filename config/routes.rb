@@ -151,6 +151,7 @@ Rails.application.routes.draw do
       resource :email_change, only: %i[new create]
       resource :dmail_filter, only: %i[edit update]
       resource :avatar, only: %i[edit update]
+      resource :e6ai_favorite_import, only: %i[show create]
     end
   end
 

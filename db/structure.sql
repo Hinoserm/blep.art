@@ -746,6 +746,49 @@ ALTER SEQUENCE public.dmails_id_seq OWNED BY public.dmails.id;
 
 
 --
+-- Name: e6ai_favorite_imports; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.e6ai_favorite_imports (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    e6ai_user_id integer NOT NULL,
+    status character varying DEFAULT 'queued'::character varying NOT NULL,
+    source character varying,
+    error character varying,
+    expected_count integer,
+    pages_fetched integer DEFAULT 0 NOT NULL,
+    found_count integer DEFAULT 0 NOT NULL,
+    imported_count integer DEFAULT 0 NOT NULL,
+    already_count integer DEFAULT 0 NOT NULL,
+    missing_count integer DEFAULT 0 NOT NULL,
+    over_limit_count integer DEFAULT 0 NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    attempt integer DEFAULT 1 NOT NULL
+);
+
+
+--
+-- Name: e6ai_favorite_imports_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.e6ai_favorite_imports_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: e6ai_favorite_imports_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.e6ai_favorite_imports_id_seq OWNED BY public.e6ai_favorite_imports.id;
+
+
+--
 -- Name: edit_histories; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3407,6 +3450,13 @@ ALTER TABLE ONLY public.dmails ALTER COLUMN id SET DEFAULT nextval('public.dmail
 
 
 --
+-- Name: e6ai_favorite_imports id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.e6ai_favorite_imports ALTER COLUMN id SET DEFAULT nextval('public.e6ai_favorite_imports_id_seq'::regclass);
+
+
+--
 -- Name: edit_histories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -4018,6 +4068,14 @@ ALTER TABLE ONLY public.dmail_filters
 
 ALTER TABLE ONLY public.dmails
     ADD CONSTRAINT dmails_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: e6ai_favorite_imports e6ai_favorite_imports_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.e6ai_favorite_imports
+    ADD CONSTRAINT e6ai_favorite_imports_pkey PRIMARY KEY (id);
 
 
 --
@@ -4976,6 +5034,13 @@ CREATE INDEX index_dmails_on_owner_id ON public.dmails USING btree (owner_id);
 --
 
 CREATE INDEX index_dmails_on_to_tsvector_english_body ON public.dmails USING gin (to_tsvector('english'::regconfig, body));
+
+
+--
+-- Name: index_e6ai_favorite_imports_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_e6ai_favorite_imports_on_user_id ON public.e6ai_favorite_imports USING btree (user_id);
 
 
 --
@@ -6320,6 +6385,14 @@ ALTER TABLE ONLY public.appeals
 
 
 --
+-- Name: e6ai_favorite_imports fk_rails_1347bf818e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.e6ai_favorite_imports
+    ADD CONSTRAINT fk_rails_1347bf818e FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: avoid_posting_versions fk_rails_1d1f54e17a; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -6622,6 +6695,8 @@ ALTER TABLE ONLY public.oauth_access_tokens
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261105170000'),
+('20261105160000'),
 ('20261103204749'),
 ('20261026161409'),
 ('20261026161404'),

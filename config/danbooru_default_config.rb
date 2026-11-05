@@ -90,6 +90,17 @@ module Danbooru
       user.show_post_statistics = true
     end
 
+    # Where users import their public e6ai.net favorites from.
+    def e6ai_favorites_import_url
+      "https://e6ai.net"
+    end
+
+    # Directory of the public favorites crawl (USER_ID/PAGE.json.gz). Users the crawl has finished
+    # are imported from it without contacting e6ai.net. nil fetches every import live.
+    def e6ai_favorites_scrape_path
+      nil
+    end
+
     def default_blacklist
       []
     end
