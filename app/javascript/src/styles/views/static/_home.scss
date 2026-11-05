@@ -3,7 +3,7 @@
 
 body.c-static.a-home {
   background: #000; // I am certain this was needed for something
-  background-color: theme.get("bg-color", #1F1F1F);
+  background-color: theme.get("bg-color", #000);
   position: relative;
 
   #page {
