@@ -420,6 +420,18 @@ module Danbooru
       750
     end
 
+    # Index pages viewed without a search still show real page numbers. Tables that PostgreSQL
+    # estimates at fewer rows than this are always counted exactly.
+    def paginator_exact_count_max_rows
+      2_000_000
+    end
+
+    # Larger tables get an exact count with this time limit (milliseconds). If it runs out,
+    # PostgreSQL's row estimate is used instead.
+    def paginator_count_timeout
+      500
+    end
+
     def blip_max_size
       1_000
     end

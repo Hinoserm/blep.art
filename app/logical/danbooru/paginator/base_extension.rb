@@ -49,17 +49,24 @@ module Danbooru
         end
       end
 
-      # When paginating large tables, we want to avoid doing an expensive count query
-      # when the result won't even be used. So when calling paginate you can pass in
-      # an optional :search_count key which points to the search params. If these params
-      # exist, then assume we're doing a search and don't override the default count
-      # behavior. Otherwise, just return some large number so the paginator skips the
-      # count.
+      # When calling paginate you can pass an optional :search_count key which points to
+      # the search params. If they are present we're doing a search and count it normally.
+      # If they're blank, the page is an unfiltered index of a possibly huge table, and
+      # unsearched_count decides how to count it without an expensive full-table scan.
       def total_count
-        return 1_000_000 if @paginator_options.key?(:search_count) && @paginator_options[:search_count].blank?
         return @paginator_options[:total_count] if @paginator_options[:total_count]
 
-        real_count
+        @total_count ||=
+          if @paginator_options.key?(:search_count) && @paginator_options[:search_count].blank?
+            unsearched_count
+          else
+            real_count
+          end
+      end
+
+      # Fallback for collections that can't estimate their size.
+      def unsearched_count
+        1_000_000
       end
 
       ### Parsing and Validation ###
