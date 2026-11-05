@@ -85,3 +85,23 @@ footer.footer-wrapper {
     }
   }
 }
+
+
+// "Hosted by" notice under the footer links (also on the home page)
+.host-notice {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 0 1rem 1rem;
+  box-sizing: border-box;
+
+  text-align: center;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: theme.color("text-muted");
+
+  a { white-space: nowrap; }
+}
+
+.home-footer-bottom .host-notice {
+  padding: 0.5rem 0.5rem 0.25rem;
+}
