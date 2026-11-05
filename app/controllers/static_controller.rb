@@ -2,7 +2,7 @@
 
 class StaticController < ApplicationController
   def privacy
-    @page_name = "e621:privacy_policy"
+    @page_name = "blep:privacy_policy"
     @page = format_wiki_page(@page_name)
   end
 
@@ -12,17 +12,17 @@ class StaticController < ApplicationController
   end
 
   def code_of_conduct
-    @page_name = "e621:rules"
+    @page_name = "blep:rules"
     @page = format_wiki_page(@page_name)
   end
 
   def contact
-    @page_name = "e621:contact"
+    @page_name = "blep:contact"
     @page = format_wiki_page(@page_name)
   end
 
   def takedown
-    @page_name = "e621:takedown"
+    @page_name = "blep:takedown"
     @page = format_wiki_page(@page_name)
   end
 
@@ -104,7 +104,7 @@ class StaticController < ApplicationController
 
       redirect_to(Danbooru.config.discord_site + user_hash, allow_other_host: true)
     else
-      @page_name = "e621:discord"
+      @page_name = "blep:discord"
       @page = format_wiki_page(@page_name)
     end
   end
