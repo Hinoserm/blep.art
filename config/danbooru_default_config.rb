@@ -9,7 +9,7 @@ module Danbooru
 
     # The name of this Danbooru.
     def app_name
-      "blep.art"
+      "blep"
     end
 
     def server_name
