@@ -1,49 +1,6 @@
-@use 'sass:list';
-
-// Logo configuration - organized by category for easier maintenance
-$pride-logos: (
-  "pride",
-  "pride_philadelphia",
-  "pride_progressive",
-);
-
-$sexuality-logos: (
-  "ace", "aegosexual", "agender", "androgyne", "aro",
-  "bigender", "bi", "bear",
-  "demibisexual", "demiboy", "demigirl", "demiromantic", "demisexual",
-  "gay", "genderfluid", "genderqueer", 
-  "intersex",
-  "lesbian",
-  "nonbinary",
-  "omni",
-  "pan", "polyamory",
-  "queer",
-  "trans",
-);
-
-$other-logos: (
-  "french",
-  "luxembourg",
-  "renamon",
-);
-
-$all-logos: list.join($sexuality-logos, list.join($pride-logos, $other-logos));
-
-// Picker
+// Site logo. The theme page offers "Default" and "Pride", and only default.svg and pride.svg exist;
+// any other stored value (old flag variants, per-theme defaults) shows the default logo.
 body {
   a.nav-logo-link { background-image: url("~/images/logo/default.svg"); }
-  @each $name in $all-logos {
-    &[data-th-logo="#{$name}"] a.nav-logo-link { background-image: url("~/images/logo/#{$name}.svg"); }
-  }
-
-  &[data-th-logo="default"] {
-    a.nav-logo-link { background-image: url("~/images/logo/default.svg"); }
-    &[data-th-main="bloodlust"] a.nav-logo-link { background-image: url("~/images/logo/default_bloodlust.svg"); }
-    &[data-th-main="pony"] a.nav-logo-link { background-image: url("~/images/logo/default_pony.svg"); }
-    &[data-th-main="forest"] a.nav-logo-link { background-image: url("~/images/logo/default_forest.svg"); }
-  }
-
-  &[data-th-logo="default_blue"] {
-    a.nav-logo-link { background-image: url("~/images/logo/default.svg"); }
-  }
+  &[data-th-logo="pride"] a.nav-logo-link { background-image: url("~/images/logo/pride.svg"); }
 }
