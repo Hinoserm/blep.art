@@ -3,7 +3,7 @@
 <% area ||= :top %>
 <% tag_string ||= "" %>
 
-<% if Danbooru.config.ads_enabled? && Danbooru.config.ads_config[:areas][area].present? %>
+<% if false && Danbooru.config.ads_enabled? && Danbooru.config.ads_config[:areas][area].present? %>
   <% orientation = Danbooru.config.ads_config[:areas][area][:orientation] || :horizontal %>
   <div
     id="ad-leaderboard-<%= area.to_s %>"
