@@ -362,6 +362,13 @@ RSpec.describe PostsController do
           expect(response).to have_http_status(:forbidden)
         end
 
+        it "still lets the member edit their own upload" do
+          own_post = create(:post, uploader: member)
+          put post_path(own_post), params: valid_params
+          expect(response).to redirect_to(post_path(own_post))
+          expect(own_post.reload.source).to eq("https://example.com")
+        end
+
         it "returns 403 for JSON" do
           put post_path(post, format: :json), params: valid_params
           expect(response).to have_http_status(:forbidden)

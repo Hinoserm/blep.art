@@ -244,7 +244,10 @@ class PostsController < ApplicationController
     end
   end
 
-  def ensure_can_edit(_post)
+  def ensure_can_edit(post)
+    # Edits to your own uploads are not throttled.
+    return if post.uploader_id == CurrentUser.id
+
     can_edit = CurrentUser.can_post_edit_with_reason
     raise User::PrivilegeError, "Updater #{User.throttle_reason(can_edit)}" unless can_edit == true
   end

@@ -45,6 +45,18 @@ RSpec.describe User do
     end
   end
 
+  describe "#post_edit_limit" do
+    it "does not count edits to the user's own uploads" do
+      own_post = create(:post, uploader: user)
+      other_post = create(:post)
+      CurrentUser.scoped(user, "127.0.0.1") do
+        create(:post_version, post: own_post)
+        create(:post_version, post: other_post)
+      end
+      expect(user.post_edit_limit).to eq(Danbooru.config.post_edit_limit - 1)
+    end
+  end
+
   describe "#can_upload_with_reason" do
     before do
       allow(Danbooru.config.custom_configuration).to receive_messages(

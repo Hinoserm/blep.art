@@ -615,7 +615,7 @@ class User < ApplicationRecord
 
     create_user_throttle(:artist_edit, -> { Danbooru.config.artist_edit_limit - ArtistVersion.for_user(id).where("updated_at > ?", 1.hour.ago).count },
                          :general_bypass_throttle?, 7.days)
-    create_user_throttle(:post_edit, -> { Danbooru.config.post_edit_limit - PostVersion.for_user(id).where("updated_at > ?", 1.hour.ago).count },
+    create_user_throttle(:post_edit, -> { Danbooru.config.post_edit_limit - PostVersion.for_user(id).where("updated_at > ?", 1.hour.ago).where.not(post_id: Post.where(uploader_id: id).select(:id)).count },
                          :general_bypass_throttle?, 7.days)
     create_user_throttle(:wiki_edit, -> { Danbooru.config.wiki_edit_limit - WikiPageVersion.for_user(id).where("updated_at > ?", 1.hour.ago).count },
                          :general_bypass_throttle?, 7.days)
