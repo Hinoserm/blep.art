@@ -25,7 +25,7 @@
     <mj-section padding="16px">
       <mj-column>
         <mj-image
-          src="<%= image_url("mailers/logo.svg") %>"
+          src="<%= image_url("mailers/logo.png") %>"
           href="<%= root_url %>"
           width="64px"
           height="64px"
