@@ -97,7 +97,7 @@ module Staff
       @user = User.find(params[:id])
 
       if @user.is_staff? && !CurrentUser.user.is_bd_staff?
-        return redirect_to user_path(@user), alert: "Only BD staff can request password resets for staff accounts" # rubocop:disable Style/RedundantReturn
+        return redirect_to user_path(@user), alert: "Only Blep.ART staff can request password resets for staff accounts" # rubocop:disable Style/RedundantReturn
       end
     end
 
@@ -105,7 +105,7 @@ module Staff
       @user = User.find(params[:id])
 
       if @user.is_staff? && !CurrentUser.user.is_bd_staff?
-        return redirect_to user_path(@user), alert: "Only BD staff can request password resets for staff accounts"
+        return redirect_to user_path(@user), alert: "Only Blep.ART staff can request password resets for staff accounts"
       end
 
       invalidate_old_password = params.dig(:admin, :invalidate_old_password)&.truthy? || false
@@ -118,7 +118,7 @@ module Staff
       @user = User.find(params[:id])
 
       if @user.is_staff? && !CurrentUser.user.is_bd_staff?
-        return redirect_to user_path(@user), alert: "Only BD staff can remove 2FA from staff accounts"
+        return redirect_to user_path(@user), alert: "Only Blep.ART staff can remove 2FA from staff accounts"
       end
 
       # The totp_enabled bit and the row should never drift apart.

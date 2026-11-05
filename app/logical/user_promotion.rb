@@ -85,7 +85,7 @@ class UserPromotion
   end
 
   def validate
-    raise User::PrivilegeError, "Can't demote BD staff" if user.is_bd_staff? && !promoter.is_bd_staff?
-    raise User::PrivilegeError, "Only BD staff can promote to admin" if new_level.to_i >= UserLevel::ADMIN && !promoter.is_bd_staff?
+    raise User::PrivilegeError, "Can't demote Blep.ART staff" if user.is_bd_staff? && !promoter.is_bd_staff?
+    raise User::PrivilegeError, "Only Blep.ART staff can promote to admin" if new_level.to_i >= UserLevel::ADMIN && !promoter.is_bd_staff?
   end
 end

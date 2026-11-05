@@ -280,7 +280,7 @@ module SiteMap
   page :janitor, :post_report_reasons, "Post Report Reasons", level: UserLevel::ADMIN
   page :janitor, :post_flag_reasons, "Post Flag Reasons", level: UserLevel::ADMIN
   page :janitor, :new_staff_reowner, "Reowner",
-       gate: { inline: "bd_staff flag" }, visible: ->(u) { u.is_bd_staff? }
+       gate: { inline: "Blep.ART staff flag" }, visible: ->(u) { u.is_bd_staff? }
   page :janitor, :staff_destroyed_posts, "Destroyed Posts", level: UserLevel::ADMIN
 
   # --- Moderator ---
