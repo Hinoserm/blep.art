@@ -194,8 +194,7 @@ module Staff
       end
       return if added.empty? && removed.empty?
       @user.save!
-      ModAction.log(:user_flags_change, { user_id: @user.id, added: added, removed: removed })
-      StaffAuditLog.log(:user_flags_change, CurrentUser.user, { user_id: @user.id, added: added, removed: removed })
+      ModAction.log(:user_staff_flags_change, { user_id: @user.id, added: added, removed: removed })
     end
 
     def user_params(user)

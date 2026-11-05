@@ -166,6 +166,12 @@ class ModActionDecorator < ApplicationDecorator
       else
         "Changed #{user} level to #{vals['level']}"
       end
+    when "user_staff_flags_change"
+      if CurrentUser.is_admin?
+        "Changed #{user} staff flags. Added: [#{vals['added']&.join(', ')}] Removed: [#{vals['removed']&.join(', ')}]"
+      else
+        "Changed a user's staff flags"
+      end
     when "user_flags_change"
       "Changed #{user} flags. Added: [#{vals['added']&.join(', ')}] Removed: [#{vals['removed']&.join(', ')}]"
     when "edited_user"
