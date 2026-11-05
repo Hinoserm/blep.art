@@ -89,6 +89,8 @@ form.lockdown-form {
       font-size: 0.9em;
     }
 
-    tr.changed td:first-child { font-weight: bold; }
+    label { font-weight: normal; }
+    tr.changed label { font-weight: bold; }
+    tr.changed .default::before { content: "changed from "; }
   }
 }
