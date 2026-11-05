@@ -1,3 +1,4 @@
+@use "base/breakpoints";
 @use "colors/theme";
 
 .settings-section {
@@ -92,5 +93,39 @@ form.lockdown-form {
     label { font-weight: normal; }
     tr.changed label { font-weight: bold; }
     tr.changed .default::before { content: "changed from "; }
+
+    // Phones: one stacked row per limit -- label on top, input and default underneath.
+    @include breakpoints.mobile {
+      display: block;
+
+      thead { display: none; }
+      tbody { display: block; }
+
+      tr {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 0.25rem 0.75rem;
+        padding: 0.5rem;
+      }
+
+      td {
+        display: block;
+        padding: 0;
+        white-space: normal;
+      }
+
+      td:first-child { grid-column: 1 / -1; }
+      td:nth-child(2) { display: flex; align-items: center; }
+      label { white-space: normal; }
+
+      .default {
+        width: auto;
+        white-space: nowrap;
+        &::before { content: "default "; }
+      }
+
+      .wait-human { white-space: nowrap; }
+    }
   }
 }
