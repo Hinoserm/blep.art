@@ -130,16 +130,18 @@ footer.footer-wrapper {
   }
 }
 
-// Desktop: a fourth column after the site links, with the same divider
+// Wide screens: the notice is a column to the right of the panel. An empty column of the
+// same width on the left keeps the logo + links panel exactly centred.
 footer.footer-wrapper {
-  @include breakpoints.desktop {
+  @include breakpoints.above(72rem) {
     .footer-grid {
-      grid-template-areas: "logo left right host";
+      grid-template-columns: 18rem min-content min-content min-content 18rem;
+      grid-template-areas: ". logo left right host";
       align-items: center;
     }
 
     .host-notice {
-      width: 17rem;
+      width: 100%;
       margin-left: 1rem;
       padding: 0 0 0 1rem;
       border-top: 0;
