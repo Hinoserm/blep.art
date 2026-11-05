@@ -2,9 +2,8 @@
 @use "base/breakpoints";
 
 body.c-static.a-home {
-  background-color: theme.color("background");
-  background-image: theme.image("background");
-  background-position: theme.image("background-position");
+  background-color: theme.get("bg-color", #1F1F1F);
+  background-image: none;
   position: relative;
 
   #page {
