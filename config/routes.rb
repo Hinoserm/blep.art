@@ -80,7 +80,6 @@ Rails.application.routes.draw do
         put :panic
         put :enact
         put :uploads_min_level
-        put :uploads_wait_hours
         put :uploads_hide_pending
         put :maintenance
       end
