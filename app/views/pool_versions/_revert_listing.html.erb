@@ -7,7 +7,7 @@
         <th>Changes</th>
         <th>Desc Chg</th>
         <th>Updater</th>
-        <% if CurrentUser.is_admin? %>
+        <% if CurrentUser.can_view_ip_addresses? %>
           <th>IP Address</th>
         <% end %>
         <th>Active?</th>
@@ -29,7 +29,7 @@
               <%= link_to_user pool_version.updater %>
             <% end %>
           </td>
-          <% if CurrentUser.is_admin? %>
+          <% if CurrentUser.can_view_ip_addresses? %>
             <td>
               <%= link_to_ip pool_version.updater_ip_addr %>
             </td>

@@ -96,24 +96,25 @@ class ExceptionLog < ApplicationRecord
     total
   end
 
+  # Admins see email addresses; only IP-access holders see IP addresses.
   def viewable_message
-    if CurrentUser.is_admin?
-      message
-    else
-      scrub_ips(scrub_emails(message))
-    end
+    scrub_for_viewer(message)
   end
 
   def viewable_extra_params
-    if CurrentUser.is_admin?
-      extra_params
-    else
-      extra_params.deep_transform_values do |value|
-        next value unless value.is_a?(String)
-        next scrub_emails(value) if value == extra_params["user_agent"]
-        scrub_ips(scrub_emails(value))
-      end
+    return extra_params if CurrentUser.is_admin? && CurrentUser.can_view_ip_addresses?
+
+    extra_params.deep_transform_values do |value|
+      next value unless value.is_a?(String)
+      next(CurrentUser.is_admin? ? value : scrub_emails(value)) if value == extra_params["user_agent"]
+      scrub_for_viewer(value)
     end
+  end
+
+  def scrub_for_viewer(text)
+    text = scrub_emails(text) unless CurrentUser.is_admin?
+    text = scrub_ips(text) unless CurrentUser.can_view_ip_addresses?
+    text
   end
 
   private

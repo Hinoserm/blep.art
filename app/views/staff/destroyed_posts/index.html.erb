@@ -2,9 +2,13 @@
   <div id="a-index">
     <%= form_search(path: staff_destroyed_posts_path) do |f| %>
       <%= f.user :destroyer %>
-      <%= f.input :destroyer_ip_addr, label: "Destroyer IP Address" %>
+      <% if CurrentUser.can_view_ip_addresses? %>
+        <%= f.input :destroyer_ip_addr, label: "Destroyer IP Address" %>
+      <% end %>
       <%= f.user :uploader %>
-      <%= f.input :uploader_ip_addr, label: "Uploader IP Address" %>
+      <% if CurrentUser.can_view_ip_addresses? %>
+        <%= f.input :uploader_ip_addr, label: "Uploader IP Address" %>
+      <% end %>
       <%= f.input :post_id, label: "Post ID" %>
       <%= f.input :md5 %>
     <% end %>
@@ -30,13 +34,15 @@
           <td><%= compact_time(destroyed_post.created_at) %></td>
           <td>
             <%= link_to_user(destroyed_post.destroyer) %><br>
-            <%= link_to_ip(destroyed_post.destroyer_ip_addr) %>
+            <% if CurrentUser.can_view_ip_addresses? %>
+              <%= link_to_ip(destroyed_post.destroyer_ip_addr) %>
+            <% end %>
           </td>
           <td>
             <% if destroyed_post.uploader_id.present? %>
               <%= link_to_user(destroyed_post.uploader) %>
             <% end %><br>
-            <% if destroyed_post.uploader_ip_addr.present? %>
+            <% if destroyed_post.uploader_ip_addr.present? && CurrentUser.can_view_ip_addresses? %>
               <%= link_to_ip(destroyed_post.uploader_ip_addr) %>
             <% end %>
           </td>

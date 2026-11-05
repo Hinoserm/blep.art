@@ -29,7 +29,7 @@ module Staff
 
     def search_params
       permitted = %i[updater_id updater_name staff_wiki_id title body]
-      permitted += %i[ip_addr] if CurrentUser.is_admin?
+      permitted += %i[ip_addr] if CurrentUser.can_view_ip_addresses?
       permit_search_params permitted
     end
   end

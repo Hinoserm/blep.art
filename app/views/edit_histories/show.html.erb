@@ -8,7 +8,7 @@
           <div class="author">
             <h6><%= link_to_user edit.user %></h6>
             <%= compact_time edit.created_at %>
-            <% if CurrentUser.is_admin? %>
+            <% if CurrentUser.can_view_ip_addresses? %>
               <div><%= link_to_ip edit.ip_addr %></div>
             <% end %>
           </div>

@@ -3,6 +3,7 @@
 module Staff
   class IpAddrsController < ApplicationController
     before_action :admin_only
+    before_action :can_view_ip_addresses_only
     respond_to :html, :json
 
     rescue_from Moderator::IpAddrSearch::InvalidIpAddr, with: :render_invalid_ip_addr

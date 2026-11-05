@@ -238,6 +238,8 @@ class ModAction < ApplicationRecord
     return {} unless original_values.is_a?(Hash)
 
     if CurrentUser.is_admin?
+      # IP bans carry the address; admins without IP access get them without it.
+      return original_values.except("ip_addr") if %i[ip_ban_create ip_ban_delete].include?(action.to_sym) && !CurrentUser.can_view_ip_addresses?
       original_values
     else
       valid_keys = KnownActions[action.to_sym]&.keys&.map(&:to_s) || []

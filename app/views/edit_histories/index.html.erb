@@ -10,7 +10,7 @@
         <th></th>
         <th>Type</th>
         <th>Date</th>
-        <% if CurrentUser.is_admin? %>
+        <% if CurrentUser.can_view_ip_addresses? %>
           <th>IP Address</th>
         <% end %>
         <th>Editor</th>
@@ -25,7 +25,7 @@
           <td><%= link_to "Show", action: "show", id: edit.versionable_id, type: edit.versionable_type %></td>
           <td><%= edit.versionable_type %></td>
           <td><%= compact_time edit.created_at %></td>
-          <% if CurrentUser.is_admin? %>
+          <% if CurrentUser.can_view_ip_addresses? %>
             <td><%= link_to_ip edit.ip_addr %></td>
           <% end %>
           <td><%= link_to_user edit.user %></td>

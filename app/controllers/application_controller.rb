@@ -292,7 +292,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  %i[is_bd_staff is_bd_auditor can_view_staff_notes can_handle_takedowns can_edit_avoid_posting_entries].each do |role|
+  %i[is_bd_staff is_bd_auditor can_view_staff_notes can_handle_takedowns can_edit_avoid_posting_entries can_view_ip_addresses].each do |role|
     define_method("#{role}_only") do
       user_access_check("#{role}?")
     end

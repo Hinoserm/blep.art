@@ -58,7 +58,7 @@
             <li><%= link_to "Show Edits", edit_history_path(id: comment.id, type: 'Comment') %></li>
             <%= render "user_warnable/buttons", model: comment %>
           <% end %>
-          <% if CurrentUser.is_admin? %>
+          <% if CurrentUser.can_view_ip_addresses? %>
             <li>|</li>
             <li>
               <strong>IP</strong>

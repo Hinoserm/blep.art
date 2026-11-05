@@ -78,7 +78,7 @@
             <li><%= link_to "Show Edits", edit_history_path(id: forum_post.id, type: 'ForumPost') %></li>
             <%= render "user_warnable/buttons", model: forum_post %>
           <% end %>
-          <% if CurrentUser.user.is_admin? %>
+          <% if CurrentUser.can_view_ip_addresses? %>
             <li>|</li>
             <li>
               <strong>IP</strong>

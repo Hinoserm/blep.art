@@ -16,9 +16,9 @@
         <%= email_domain_search(user.email) %>
       </span>
 
-      <h4>Last IP & Login Time</h4>
+      <h4><%= CurrentUser.can_view_ip_addresses? ? "Last IP & Login Time" : "Last Login Time" %></h4>
 
-      <span><%= link_to_ip(user.last_ip_addr) %> | <%= user.last_logged_in_at ? compact_date(user.last_logged_in_at) : "(none)" %></span>
+      <span><% if CurrentUser.can_view_ip_addresses? %><%= link_to_ip(user.last_ip_addr) %> | <% end %><%= user.last_logged_in_at ? compact_date(user.last_logged_in_at) : "(none)" %></span>
     <% end %>
 
     <% if CurrentUser.is_moderator? %>

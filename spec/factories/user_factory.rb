@@ -61,6 +61,12 @@ FactoryBot.define do
       level { UserLevel::ADMIN }
     end
 
+    # Admin who also holds the MakeFox flag (IP address access).
+    factory :makefox_admin_user do
+      level { UserLevel::ADMIN }
+      is_makefox { true }
+    end
+
     # Legacy option
     factory(:bd_staff_user) do
       is_bd_staff { true }

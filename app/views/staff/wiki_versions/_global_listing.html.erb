@@ -4,7 +4,7 @@
       <tr>
         <th>Title</th>
         <th>Page</th>
-        <% if CurrentUser.is_admin? %>
+        <% if CurrentUser.can_view_ip_addresses? %>
           <th>IP Address</th>
         <% end %>
         <th>Last edited</th>
@@ -15,7 +15,7 @@
         <tr>
           <td><%= link_to version.title, staff_wiki_version_path(version) %></td>
           <td><%= link_to "page", staff_wiki_path(version.staff_wiki_id) %></td>
-          <% if CurrentUser.is_admin? %>
+          <% if CurrentUser.can_view_ip_addresses? %>
             <td><%= link_to_ip version.updater_ip_addr %></td>
           <% end %>
           <td>

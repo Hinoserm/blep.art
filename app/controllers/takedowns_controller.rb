@@ -105,7 +105,8 @@ class TakedownsController < ApplicationController
   def search_params
     permitted_params = %i[status]
     permitted_params += %i[source reason creator_id creator_name creator_logged_in reason_hidden instructions post_id notes] if CurrentUser.is_moderator? || CurrentUser.is_approver?
-    permitted_params += %i[ip_addr email vericode order] if CurrentUser.is_admin?
+    permitted_params += %i[email vericode order] if CurrentUser.is_admin?
+    permitted_params += %i[ip_addr] if CurrentUser.can_view_ip_addresses?
     permit_search_params permitted_params
   end
 

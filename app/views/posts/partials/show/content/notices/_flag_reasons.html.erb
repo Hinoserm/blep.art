@@ -10,7 +10,7 @@
         <% if flag.creator_id == post.uploader_id && !flag.is_deletion %>
           <%= svg_icon(:octagon_alert, class: "text-inline", title: "Flag created by the current uploader") %>
         <% end %>
-        <% if CurrentUser.user.is_admin? %>
+        <% if CurrentUser.can_view_ip_addresses? %>
           (<%= link_to_ip(flag.creator_ip_addr) %>)
         <% end %>
       <% end %>

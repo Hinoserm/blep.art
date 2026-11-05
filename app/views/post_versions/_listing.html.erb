@@ -40,7 +40,7 @@
         <% else %>
           Anonymous
         <% end %>
-        <% if CurrentUser.is_admin? %>
+        <% if CurrentUser.can_view_ip_addresses? %>
           (<%= link_to_ip(post_version.updater_ip_addr) %>)
         <% end %>
         <%= time_ago_in_words_tagged(post_version.updated_at, compact: true) %>

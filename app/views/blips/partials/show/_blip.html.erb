@@ -73,7 +73,7 @@
             <%= render "user_warnable/buttons", model: blip %>
           <% end %>
 
-          <% if CurrentUser.is_admin? %>
+          <% if CurrentUser.can_view_ip_addresses? %>
             <li>|</li>
             <li>
               <strong>IP</strong>

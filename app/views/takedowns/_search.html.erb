@@ -22,13 +22,15 @@
   <% if CurrentUser.is_admin? %>
     <br />
     <%= f.input :email, label: "Email" %>
-    <%= f.input :ip_addr, label: "IP Address" %>
+    <% if CurrentUser.can_view_ip_addresses? %>
+      <%= f.input :ip_addr, label: "IP Address" %>
+    <% end %>
     <%= f.input :vericode, label: "Vericode" %>
 
     <%= f.input :order, label: 'Order', collection: [["Date", "date"],
                                                       ["Source", "source"],
                                                       ["Email", "email"],
-                                                      ["IP Address", "ip_addr"],
+                                                      *(CurrentUser.can_view_ip_addresses? ? [["IP Address", "ip_addr"]] : []),
                                                       ["Status", "status"],
                                                       ["Post count", "post_count"]] %>
   <% end %>

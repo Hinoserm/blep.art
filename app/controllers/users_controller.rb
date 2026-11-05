@@ -354,7 +354,8 @@ class UsersController < ApplicationController
   def search_params
     permitted_params = %i[name_matches about_me avatar_id level min_level max_level can_approve_posts can_upload_free order]
     permitted_params += %i[can_karma_free] unless Danbooru.config.upload_karma_free_threshold.nil?
-    permitted_params += %i[ip_addr email_matches] if CurrentUser.is_admin?
+    permitted_params += %i[email_matches] if CurrentUser.is_admin?
+    permitted_params += %i[ip_addr] if CurrentUser.can_view_ip_addresses?
     permit_search_params permitted_params
   end
 end

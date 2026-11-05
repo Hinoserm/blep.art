@@ -5,6 +5,7 @@ module Staff
     before_action :admin_only, except: %i[edit_blacklist]
     before_action :moderator_only, only: %i[edit_blacklist]
     before_action :is_bd_staff_only, only: %i[anonymize anonymize_confirm]
+    before_action :can_view_ip_addresses_only, only: %i[alt_list]
     before_action :requires_reauthentication, only: %i[anonymize_confirm totp_reset request_password_reset password_reset]
     respond_to :html, :json
 
@@ -58,8 +59,8 @@ module Staff
       if CurrentUser.is_bd_staff?
         @user.mark_verified! if params[:user][:verified].to_s.truthy?
         @user.mark_unverified! if params[:user][:verified].to_s.falsy?
-        update_staff_flags
       end
+      update_staff_flags if CurrentUser.is_bd_staff? || CurrentUser.can_view_ip_addresses?
       if !@user.is_restricted? && params[:user][:level].present?
         @user.promote_to!(params[:user][:level], params[:user])
       end
@@ -176,17 +177,24 @@ module Staff
 
     private
 
-    STAFF_FLAGS = { is_bd_staff: "staff", is_bd_auditor: "auditor" }.freeze
+    STAFF_FLAGS = { is_bd_staff: "staff", is_bd_auditor: "auditor", is_makefox: "makefox" }.freeze
 
-    # Staff and auditor flags. Only staff-flag holders reach this. Nobody can change their own
-    # staff flag, so the last staff account cannot lock itself out.
+    # Who may set each flag. The staff and auditor flags are set by staff-flag holders; the
+    # MakeFox flag (IP access) only by people who already hold it, whatever their level.
+    def can_set_staff_flag?(flag)
+      flag == :is_makefox ? CurrentUser.is_makefox? : CurrentUser.is_bd_staff?
+    end
+
+    # Staff, auditor and MakeFox flags. Nobody can change their own staff or MakeFox flag, so
+    # the last holder cannot lock themselves out.
     def update_staff_flags
       added = []
       removed = []
       STAFF_FLAGS.each do |flag, label|
         value = params[:user][flag]
         next if value.nil?
-        next if flag == :is_bd_staff && @user.id == CurrentUser.id
+        next unless can_set_staff_flag?(flag)
+        next if %i[is_bd_staff is_makefox].include?(flag) && @user.id == CurrentUser.id
         wanted = value.to_s.truthy?
         next if @user.send(flag) == wanted
         @user.send("#{flag}=", wanted)

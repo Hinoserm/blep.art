@@ -69,6 +69,7 @@ class User < ApplicationRecord
     is_bd_staff
     is_bd_auditor
     has_cropped_avatar
+    is_makefox
   ].freeze
 
   include Danbooru::HasBitFlags
@@ -421,6 +422,12 @@ class User < ApplicationRecord
 
     def is_bd_staff?
       is_bd_staff
+    end
+
+    # IP addresses are PII: only MakeFox flag holders (actual employees) see or search them,
+    # whatever their level.
+    def can_view_ip_addresses?
+      is_makefox?
     end
 
     def is_artist?

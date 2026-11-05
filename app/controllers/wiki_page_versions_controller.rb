@@ -33,7 +33,7 @@ class WikiPageVersionsController < ApplicationController
 
   def search_params
     permitted_params = %i[updater_id updater_name wiki_page_id title body is_locked is_deleted]
-    permitted_params += %i[ip_addr] if CurrentUser.is_admin?
+    permitted_params += %i[ip_addr] if CurrentUser.can_view_ip_addresses?
     permit_search_params permitted_params
   end
 end

@@ -11,7 +11,7 @@
     <%= f.input :note %>
     <%= f.user :creator %>
   <% end %>
-  <% if CurrentUser.is_admin? %>
+  <% if CurrentUser.can_view_ip_addresses? %>
     <%= f.input :ip_addr, label: "Ip Address" %>
   <% end %>
 <% end %>

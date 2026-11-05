@@ -1,4 +1,4 @@
-<% if CurrentUser.is_admin? %>
+<% if CurrentUser.can_view_ip_addresses? %>
   <div id="ip-addr-search">
     <%= render "search_ip_addr" %>
   </div>

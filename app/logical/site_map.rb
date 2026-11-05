@@ -284,9 +284,12 @@ module SiteMap
   # --- Moderator ---
   group :moderator, "Moderator"
   page :moderator, :tickets, "Tickets"
-  page :moderator, :ip_bans, "IP Bans", level: UserLevel::ADMIN
-  page :moderator, :staff_ip_addrs, "IP Addresses", level: UserLevel::ADMIN
-  page :moderator, :alt_list_staff_users, "Alt list", level: UserLevel::ADMIN
+  page :moderator, :ip_bans, "IP Bans",
+       gate: { inline: "MakeFox flag (IP access)" }, visible: ->(u) { u.can_view_ip_addresses? }
+  page :moderator, :staff_ip_addrs, "IP Addresses",
+       gate: { inline: "MakeFox flag (IP access)" }, visible: ->(u) { u.can_view_ip_addresses? }
+  page :moderator, :alt_list_staff_users, "Alt list",
+       gate: { inline: "MakeFox flag (IP access)" }, visible: ->(u) { u.can_view_ip_addresses? }
   page :moderator, :staff_automod_rules, "AutoMod Rules", level: UserLevel::ADMIN
   page :moderator, :index_post_votes, "Post Votes", level: UserLevel::MODERATOR
   page :moderator, :user_name_change_requests, "User Name Changes", level: UserLevel::MODERATOR

@@ -31,16 +31,14 @@ class ModActionDecorator < ApplicationDecorator
       ### IP Ban ###
     when "ip_ban_create"
       msg = "Created ip ban"
-      if CurrentUser.is_admin?
-        msg += " #{vals['ip_addr']}\nBan reason: #{vals['reason']}"
-      end
+      msg += " #{vals['ip_addr']}" if CurrentUser.can_view_ip_addresses?
+      msg += "\nBan reason: #{vals['reason']}" if CurrentUser.is_admin?
       msg
 
     when "ip_ban_delete"
       msg = "Removed ip ban"
-      if CurrentUser.is_admin?
-        msg += " #{vals['ip_addr']}\nBan reason: #{vals['reason']}"
-      end
+      msg += " #{vals['ip_addr']}" if CurrentUser.can_view_ip_addresses?
+      msg += "\nBan reason: #{vals['reason']}" if CurrentUser.is_admin?
       msg
 
       ### Search Trend ###

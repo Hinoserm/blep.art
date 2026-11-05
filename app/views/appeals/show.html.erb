@@ -21,7 +21,7 @@
         appealed
         <%= time_ago_in_words_tagged(@appeal.created_at) %>
 
-        <% if CurrentUser.is_admin? %>
+        <% if CurrentUser.can_view_ip_addresses? %>
         <div class="appeal-display-report-ip">
           <%= link_to_ip(@appeal.creator_ip_addr) %>
         </div>

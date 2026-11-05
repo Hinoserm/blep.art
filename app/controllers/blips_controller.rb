@@ -100,7 +100,7 @@ class BlipsController < ApplicationController
 
   def search_params
     permitted_params = %i[body_matches response_to creator_name creator_id order]
-    permitted_params += %i[ip_addr] if CurrentUser.is_admin?
+    permitted_params += %i[ip_addr] if CurrentUser.can_view_ip_addresses?
     permit_search_params permitted_params
   end
 

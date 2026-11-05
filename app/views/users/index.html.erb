@@ -12,6 +12,8 @@
           <th>Deleted</th>
           <% if CurrentUser.is_admin? %>
             <th>Email</th>
+          <% end %>
+          <% if CurrentUser.can_view_ip_addresses? %>
             <th>Last IP</th>
           <% end %>
           <th>Notes</th>
@@ -38,6 +40,8 @@
                 <%= user.email %>
                 <%= email_domain_search(user.email) %>
               </td>
+            <% end %>
+            <% if CurrentUser.can_view_ip_addresses? %>
               <td><%= link_to_ip(user.last_ip_addr) %></td>
             <% end %>
             <td><%= link_to user.note_version_count, note_versions_path(:search => {:updater_id => user.id}) %></td>

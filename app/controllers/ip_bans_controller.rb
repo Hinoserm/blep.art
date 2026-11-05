@@ -2,7 +2,7 @@
 
 class IpBansController < ApplicationController
   respond_to :html, :json
-  before_action :admin_only
+  before_action :can_view_ip_addresses_only
 
   def index
     @ip_bans = IpBan.includes(:creator).search(search_params).paginate(params[:page], limit: params[:limit])

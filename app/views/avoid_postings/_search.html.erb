@@ -7,7 +7,9 @@
 
   <% if CurrentUser.is_admin? %>
     <%= f.user :creator %>
-    <%= f.input :ip_addr, label: "Creator IP" %>
+    <% if CurrentUser.can_view_ip_addresses? %>
+      <%= f.input :ip_addr, label: "Creator IP" %>
+    <% end %>
     <br />
   <% end %>
   <%= f.input :details, label: "Details" %>

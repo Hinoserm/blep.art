@@ -24,7 +24,9 @@ module Staff
     private
 
     def search_params
-      permit_search_params(%i[destroyer_id destroyer_name destroyer_ip_addr uploader_id uploader_name uploader_ip_addr post_id md5])
+      permitted = %i[destroyer_id destroyer_name uploader_id uploader_name post_id md5]
+      permitted += %i[destroyer_ip_addr uploader_ip_addr] if CurrentUser.can_view_ip_addresses?
+      permit_search_params(permitted)
     end
 
     def dp_params

@@ -21,7 +21,7 @@ class PoolVersionsController < ApplicationController
 
   def search_params
     permitted_params = %i[updater_id updater_name pool_id]
-    permitted_params += %i[ip_addr] if CurrentUser.is_admin?
+    permitted_params += %i[ip_addr] if CurrentUser.can_view_ip_addresses?
     permit_search_params permitted_params
   end
 end

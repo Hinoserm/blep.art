@@ -8,6 +8,8 @@
         <th>Source</th>
         <% if CurrentUser.is_admin? %>
           <th>Email</th>
+        <% end %>
+        <% if CurrentUser.can_view_ip_addresses? %>
           <th>IP Address</th>
         <% end %>
         <th>Status</th>
@@ -36,6 +38,8 @@
 
           <% if CurrentUser.is_admin? %>
             <td><%= takedown.email %></td>
+          <% end %>
+          <% if CurrentUser.can_view_ip_addresses? %>
             <td><%= link_to_ip takedown.creator_ip_addr %></td>
           <% end %>
 

@@ -70,7 +70,7 @@ class PostFlagsController < ApplicationController
     permitted_params = %i[reason_matches creator_id creator_name post_id type is_resolved]
     permitted_params += %i[post_tags_match] if CurrentUser.is_member?
     permitted_params += %i[note] if CurrentUser.is_staff?
-    permitted_params += %i[ip_addr] if CurrentUser.is_admin?
+    permitted_params += %i[ip_addr] if CurrentUser.can_view_ip_addresses?
     permit_search_params permitted_params
   end
 

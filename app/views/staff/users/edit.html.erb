@@ -26,6 +26,17 @@
           <span class="hint">Can read other users' private messages.</span>
         </div>
       <% end %>
+      <% if CurrentUser.is_makefox? %>
+        <div class="input">
+          <label class="block" for="user_is_makefox">MakeFox flag</label>
+          <% if @user.id == CurrentUser.id %>
+            <i>You cannot change your own MakeFox flag.</i>
+          <% else %>
+            <%= select_tag("user[is_makefox]", options_for_select([["Yes", true], ["No", false]], @user.is_makefox?)) %>
+          <% end %>
+          <span class="hint">MakeFox employees: can see and search IP addresses. Only MakeFox flag holders can grant it.</span>
+        </div>
+      <% end %>
 
       <div class="input">
         <label class="block" for="user_enable_privacy_mode">Hide Favorites</label>

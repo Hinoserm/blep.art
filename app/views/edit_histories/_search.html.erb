@@ -2,7 +2,7 @@
   <%= f.user :editor, label: "Editor" %>
   <%= f.input :body_matches, label: "Body" %>
   <%= f.input :subject_matches, label: "Subject" %>
-  <% if CurrentUser.is_admin? %>
+  <% if CurrentUser.can_view_ip_addresses? %>
     <%= f.input :ip_addr, label: "Editor IP" %>
   <% end %>
   <%= f.input :versionable_type, label: "Type", collection: EditHistory::TYPE_MAP.values.map { |v| [v, v] }, include_blank: "Any" %>

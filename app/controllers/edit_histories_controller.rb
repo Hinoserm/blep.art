@@ -18,7 +18,7 @@ class EditHistoriesController < ApplicationController
 
   def search_params
     permitted_params = %i[body_matches subject_matches versionable_type versionable_id editor_name editor_id order]
-    permitted_params += %i[ip_addr] if CurrentUser.is_admin?
+    permitted_params += %i[ip_addr] if CurrentUser.can_view_ip_addresses?
     permit_search_params permitted_params
   end
 end

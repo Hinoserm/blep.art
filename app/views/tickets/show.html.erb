@@ -14,7 +14,7 @@
         </tr>
 
         <%# IP Address %>
-        <% if CurrentUser.is_admin? %>
+        <% if CurrentUser.can_view_ip_addresses? %>
           <tr>
             <td><span class='title'>IP</span></td>
             <td><%= link_to_ip(@ticket.creator_ip_addr) %></td>
