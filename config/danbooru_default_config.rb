@@ -102,7 +102,16 @@ module Danbooru
     end
 
     def default_blacklist
-      []
+      [
+        "# Violence",
+        "gore",
+        "snuff",
+        "rape",
+        "# Fetish",
+        "feces",
+        "urine",
+        "fart",
+      ]
     end
 
     # Autocomplete results matching these regular expressions will not be displayed.
@@ -337,7 +346,7 @@ module Danbooru
 
     # User bypasses the approval queue once they reach this upload karma level. Set to nil to disable.
     def upload_karma_free_threshold
-      1
+      nil
     end
 
     # Base number of concurrent queued uploads a below-threshold user may have.
@@ -621,7 +630,7 @@ module Danbooru
     # * `:users`: Also visible to all logged-in users
     # * `:all`: Also visible to everyone (including anonymous users)
     def flag_reason_visibility
-      :staff
+      :uploader
     end
 
     def deletion_reasons
