@@ -178,8 +178,7 @@ module SiteMap
   page :tools, :terms_of_use, "Terms of Use"
   page :tools, :privacy_policy, "Privacy Policy"
   page :tools, :code_of_conduct, "Code of Conduct"
-  page :tools, :discord_post, "Discord",
-       gate: { inline: "account-age + flags (can_discord?)" }, visible: ->(u) { u.can_discord? }
+  page :tools, :discord_get, "Discord"
   # page :tools, :privacy_discordbot, "Discord Bot Privacy Policy"
   page :tools, :help_pages, "Help Index"
 
