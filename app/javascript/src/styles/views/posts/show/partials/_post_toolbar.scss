@@ -281,7 +281,7 @@
 // Prompt toggle
 #ptbr-wrapper .ptbr-prompt {
   display: none;
-  @include window-larger-than(40rem) { display: flex; }
+  @include breakpoints.above(40rem) { display: flex; }
 }
 
 #ptbr-wrapper .ptbr-prompt-button {
@@ -328,7 +328,7 @@
   box-shadow: 0 0 0.5rem -0.25rem theme.color("background");
 
   &.hidden { display: none; }
-  @include window-larger-than(40rem) {
+  @include breakpoints.above(40rem) {
     .ptbr-prompt-button { display: none; }
   }
 
