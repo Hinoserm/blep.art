@@ -87,29 +87,74 @@ footer.footer-wrapper {
 }
 
 
-// "Hosted by" notice under the footer links (also on the home page)
+// "Hosted by" notice: part of the footer grid, and under the footer box on the home page
 .host-notice {
-  max-width: 44rem;
-  margin: 0 auto;
-  padding: 0 1rem 1rem;
+  margin: 0;
   box-sizing: border-box;
-
-  text-align: center;
-  font-size: 0.8rem;
-  line-height: 1.4;
-  color: theme.color("text-muted");
+  font-size: 0.9rem;
+  line-height: 1.35;
+  color: var(--color-text);
 
   a { white-space: nowrap; }
 
   .host-notice-donate {
     display: block;
-    margin-top: 0.6em;
+    margin-top: 0.5em;
   }
 }
 
-// Home page: sits under the footer box
+footer.footer-wrapper .host-notice {
+  grid-area: host;
+  width: 100%;              // wrap to the columns above, never widen them
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-section-lighten-5);
+  text-align: center;
+}
+
+// Phones: logo, then the two link columns, then the notice across both
+footer.footer-wrapper .footer-grid {
+  grid-template-areas:
+    "logo ."
+    "left right"
+    "host host";
+}
+
+// Mid widths: one row of logo + links, notice across underneath
+footer.footer-wrapper {
+  @include breakpoints.above(450px) {
+    .footer-grid {
+      grid-template-areas:
+        "logo left right"
+        "host host host";
+    }
+  }
+}
+
+// Desktop: a fourth column after the site links, with the same divider
+footer.footer-wrapper {
+  @include breakpoints.desktop {
+    .footer-grid {
+      grid-template-areas: "logo left right host";
+      align-items: center;
+    }
+
+    .host-notice {
+      width: 17rem;
+      margin-left: 1rem;
+      padding: 0 0 0 1rem;
+      border-top: 0;
+      border-left: 1px solid var(--color-section-lighten-5);
+      text-align: left;
+    }
+  }
+}
+
+// Home page: centred under the footer box
 #a-home > .host-notice {
   position: relative;
   z-index: 1;
+  max-width: 44rem;
+  margin: 0 auto;
   padding: 0.75rem 0.5rem 1rem;
+  text-align: center;
 }
