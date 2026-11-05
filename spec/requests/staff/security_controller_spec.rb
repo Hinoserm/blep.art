@@ -243,6 +243,51 @@ RSpec.describe Staff::SecurityController do
   end
 
   # ---------------------------------------------------------------------------
+  # PUT /staff/security/uploads_wait_hours
+  # ---------------------------------------------------------------------------
+
+  describe "PUT /staff/security/uploads_wait_hours" do
+    it "redirects anonymous to the login page" do
+      put uploads_wait_hours_staff_security_index_path, params: { uploads_wait_hours: { hours: 0 } }
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "returns 403 for a regular member" do
+      sign_in_as user
+      put uploads_wait_hours_staff_security_index_path, params: { uploads_wait_hours: { hours: 0 } }
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    context "as admin" do
+      before { sign_in_as admin }
+
+      it "updates the wait and logs an upload_wait_hours StaffAuditLog entry" do
+        Security::Lockdown.upload_wait_hours = 168
+        expect do
+          put uploads_wait_hours_staff_security_index_path, params: { uploads_wait_hours: { hours: 0 } }
+        end.to change(StaffAuditLog, :count).by(1)
+        expect(Security::Lockdown.upload_wait_hours).to eq(0)
+        expect(StaffAuditLog.last.action).to eq("upload_wait_hours")
+        expect(StaffAuditLog.last[:values]).to include("hours" => 0)
+        expect(response).to redirect_to(staff_security_index_path)
+      end
+
+      it "ignores a negative value" do
+        Security::Lockdown.upload_wait_hours = 24
+        put uploads_wait_hours_staff_security_index_path, params: { uploads_wait_hours: { hours: -5 } }
+        expect(Security::Lockdown.upload_wait_hours).to eq(24)
+      end
+
+      it "does not log when the value is unchanged" do
+        Security::Lockdown.upload_wait_hours = 48
+        expect do
+          put uploads_wait_hours_staff_security_index_path, params: { uploads_wait_hours: { hours: 48 } }
+        end.not_to change(StaffAuditLog, :count)
+      end
+    end
+  end
+
+  # ---------------------------------------------------------------------------
   # PUT /staff/security/uploads_hide_pending
   # ---------------------------------------------------------------------------
 

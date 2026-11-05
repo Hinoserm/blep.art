@@ -60,6 +60,15 @@ module Staff
       redirect_to staff_security_index_path
     end
 
+    def uploads_wait_hours
+      hours = params[:uploads_wait_hours][:hours].to_i
+      if hours >= 0 && hours != Security::Lockdown.upload_wait_hours
+        Security::Lockdown.upload_wait_hours = hours
+        StaffAuditLog.log(:upload_wait_hours, CurrentUser.user, { hours: hours })
+      end
+      redirect_to staff_security_index_path
+    end
+
     def uploads_hide_pending
       duration = params[:uploads_hide_pending][:duration].to_f
       if duration >= 0 && duration != Security::Lockdown.hide_pending_posts_for

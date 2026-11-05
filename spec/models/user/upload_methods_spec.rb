@@ -65,6 +65,24 @@ RSpec.describe User do
       expect(member.can_upload_with_reason).to be true
     end
 
+    it "blocks uploads from an account younger than the upload wait" do
+      Security::Lockdown.upload_wait_hours = 168
+      newbie = create(:user, created_at: 2.days.ago)
+      expect(newbie.can_upload_with_reason).to eq(:REJ_UPLOAD_NEWBIE)
+    end
+
+    it "allows uploads once the account is older than the upload wait" do
+      Security::Lockdown.upload_wait_hours = 24
+      member = create(:user, created_at: 2.days.ago)
+      expect(member.can_upload_with_reason).not_to eq(:REJ_UPLOAD_NEWBIE)
+    end
+
+    it "has no upload wait when it is set to 0 hours" do
+      Security::Lockdown.upload_wait_hours = 0
+      newbie = create(:user, created_at: 1.minute.ago)
+      expect(newbie.can_upload_with_reason).not_to eq(:REJ_UPLOAD_NEWBIE)
+    end
+
     it "allows an approver to bypass the queue" do
       approver = create(:approver_user)
       expect(approver.can_upload_with_reason).to be true

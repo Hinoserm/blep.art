@@ -575,7 +575,7 @@ class User < ApplicationRecord
         REJ_UPLOAD_HOURLY: "have reached your hourly upload limit",
         REJ_UPLOAD_EDIT: "have no remaining tag edits available",
         REJ_UPLOAD_LIMIT: "have reached your upload limit",
-        REJ_UPLOAD_NEWBIE: "cannot upload during your first week",
+        REJ_UPLOAD_NEWBIE: "cannot upload yet: new accounts have to wait before uploading",
         REJ_UPLOAD_DISABLED: "are not allowed to upload posts",
       }
       reasons.fetch(reason, "unknown upload rejection reason")
@@ -748,7 +748,7 @@ class User < ApplicationRecord
         true
       elsif can_approve_posts?
         true
-      elsif younger_than(7.days)
+      elsif Security::Lockdown.upload_wait_hours.positive? && younger_than(Security::Lockdown.upload_wait_hours.hours)
         :REJ_UPLOAD_NEWBIE
       elsif !is_privileged? && post_edit_limit <= 0 && !Danbooru.config.disable_throttles?
         :REJ_UPLOAD_EDIT

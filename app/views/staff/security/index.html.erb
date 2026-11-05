@@ -37,6 +37,17 @@
         <%= f.button :submit, value: "Submit" %>
       <% end %>
 
+      <h2>New Account Upload Wait</h2>
+      <% if Security::Lockdown.upload_wait_hours > 0 %>
+        New accounts can upload after <b><%= Security::Lockdown.upload_wait_hours %></b> hours.
+      <% else %>
+        New accounts can upload right away.
+      <% end %>
+      <%= custom_form_for(:uploads_wait_hours, url: uploads_wait_hours_staff_security_index_path, method: :put) do |f| %>
+        <%= f.input :hours, as: :integer, hint: "in hours; 0 means no wait", input_html: { value: Security::Lockdown.upload_wait_hours, min: 0 } %>
+        <%= f.button :submit, value: "Submit" %>
+      <% end %>
+
       <h2>Pending Posts</h2>
       <% if Security::Lockdown.hide_pending_posts_for > 0 %>
         Unapproved posts are currently only visible to staff for <b><%= Security::Lockdown.hide_pending_posts_for %></b> hours.

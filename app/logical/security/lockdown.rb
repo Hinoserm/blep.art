@@ -100,6 +100,15 @@ module Security
       Setting.uploads_min_level = min_upload_level
     end
 
+    # `Integer`:&nbsp; Hours a new account must wait before it can upload. 0 means no wait.
+    def self.upload_wait_hours
+      Setting.upload_wait_hours
+    end
+
+    def self.upload_wait_hours=(hours)
+      Setting.upload_wait_hours = hours
+    end
+
     # `Integer`:&nbsp; The number of hours pending posts should be hidden for.
     def self.hide_pending_posts_for
       Setting.hide_pending_posts_for
