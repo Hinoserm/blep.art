@@ -2,8 +2,9 @@
 @use "base/breakpoints";
 
 body.c-static.a-home {
-  background: #012e57; // I am certain this was needed for something
-  background-color: theme.get("bg-color", #012e57);
+  background-color: theme.color("background");
+  background-image: theme.image("background");
+  background-position: theme.image("background-position");
   position: relative;
 
   #page {
@@ -158,7 +159,7 @@ body.c-static.a-home {
   }
 
   .home-footer-bottom {
-    background: #1f3c67;
+    background: theme.color("section");
     text-align: center;
 
     margin-top: -0.5rem;
