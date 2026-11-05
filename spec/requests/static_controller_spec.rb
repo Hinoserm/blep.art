@@ -105,9 +105,6 @@ RSpec.describe StaticController do
     include_examples "a wiki page action", "/static/code_of_conduct", "e621:rules"
   end
 
-  describe "GET /static/contact" do
-    include_examples "a wiki page action", "/static/contact", "e621:contact"
-  end
 
   describe "GET /static/takedown" do
     include_examples "a wiki page action", "/static/takedown", "e621:takedown"

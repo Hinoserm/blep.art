@@ -16,11 +16,6 @@ class StaticController < ApplicationController
     @page = format_wiki_page(@page_name)
   end
 
-  def contact
-    @page_name = "blep:contact"
-    @page = format_wiki_page(@page_name)
-  end
-
   def takedown
     @page_name = "blep:takedown"
     @page = format_wiki_page(@page_name)
