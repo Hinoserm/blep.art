@@ -175,7 +175,7 @@ module SiteMap
   page :tools, :mascots, "Mascots"
   page :tools, :keyboard_shortcuts, "Keyboard Shortcuts"
   page :tools, :stats, "Stats"
-  page :tools, :terms_of_use, "Terms of Use"
+  page :tools, :terms_of_use, "Terms of Service"
   page :tools, :privacy_policy, "Privacy Policy"
   page :tools, :code_of_conduct, "Code of Conduct"
   page :tools, :discord_get, "Discord"

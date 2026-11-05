@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const DECLINE = "You must accept the TOU and confirm that you are at least 18 years old to use this site.";
+const DECLINE = "You must accept the Terms of Service and confirm that you are at least 18 years old to use this site.";
 
 function render ({ checked = false } = {}) {
   const attr = checked ? " checked" : "";

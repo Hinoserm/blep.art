@@ -15,13 +15,13 @@ class TermsOfUsesController < ApplicationController
       cookies.permanent[:tos_accepted] = Setting.tos_version
       redirect_back fallback_location: root_path
     else
-      redirect_back fallback_location: root_path, alert: "You must accept the TOU and confirm that you are at least 18 years old to use this site."
+      redirect_back fallback_location: root_path, alert: "You must accept the Terms of Service and confirm that you are at least 18 years old to use this site."
     end
   end
 
   def clear_cache
     Cache.delete("tos_content")
-    flash[:notice] = "Terms of use cache cleared"
+    flash[:notice] = "Terms of Service cache cleared"
     redirect_to terms_of_use_path
   end
 
@@ -29,7 +29,7 @@ class TermsOfUsesController < ApplicationController
     new_version = Setting.tos_version.to_i + 1
     Setting.tos_version = new_version
     Cache.delete("tos_content")
-    flash[:notice] = "Terms of use version bumped to #{new_version}"
+    flash[:notice] = "Terms of Service version bumped to #{new_version}"
     redirect_to terms_of_use_path
   end
 end

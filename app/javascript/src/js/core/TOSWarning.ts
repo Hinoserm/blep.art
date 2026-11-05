@@ -2,12 +2,12 @@ import State from "@/utility/StateUtils";
 import ToastManager, { Toast } from "@/utility/Toast";
 
 /**
- * Terms of Use modal, rendered by the server until the current TOS version is accepted.
+ * Terms of Service modal, rendered by the server until the current TOS version is accepted.
  * The form also works without JS (server-side POST); here it is accepted client-side instead.
  */
 export default class TOSWarning {
 
-  public static readonly DeclineMessage = "You must accept the TOU and confirm that you are at least 18 years old to use this site.";
+  public static readonly DeclineMessage = "You must accept the Terms of Service and confirm that you are at least 18 years old to use this site.";
 
   public static bootstrap (): void {
     const form = document.getElementById("tos-form") as HTMLFormElement | null;
