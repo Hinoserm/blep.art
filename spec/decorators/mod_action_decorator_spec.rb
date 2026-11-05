@@ -314,6 +314,18 @@ RSpec.describe ModActionDecorator do
         expect(desc).not_to include("from")
       end
 
+      it "user_staff_flags_change shows the user and flags to an admin" do
+        desc = decorate(:user_staff_flags_change, { "user_id" => target_user.id, "added" => ["staff"], "removed" => ["auditor"] }).format_description
+        expect(desc).to include(target_user.name, "staff", "auditor")
+      end
+
+      it "user_staff_flags_change hides the user and flags from non-admin staff" do
+        moderator = create(:moderator_user)
+        record = decorate(:user_staff_flags_change, { "user_id" => target_user.id, "added" => ["staff"], "removed" => [] })
+        desc = CurrentUser.scoped(moderator, "127.0.0.1") { record.format_description }
+        expect(desc).to eq("Changed a user's staff flags")
+      end
+
       it "user_flags_change includes added and removed flags" do
         desc = decorate(:user_flags_change, { "user_id" => target_user.id, "added" => ["no_flagging"], "removed" => [] }).format_description
         expect(desc).to include("no_flagging")

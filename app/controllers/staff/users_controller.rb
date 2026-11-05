@@ -58,6 +58,7 @@ module Staff
       if CurrentUser.is_bd_staff?
         @user.mark_verified! if params[:user][:verified].to_s.truthy?
         @user.mark_unverified! if params[:user][:verified].to_s.falsy?
+        update_staff_flags
       end
       if !@user.is_restricted? && params[:user][:level].present?
         @user.promote_to!(params[:user][:level], params[:user])
@@ -174,6 +175,27 @@ module Staff
     end
 
     private
+
+    STAFF_FLAGS = { is_bd_staff: "staff", is_bd_auditor: "auditor" }.freeze
+
+    # Staff and auditor flags. Only staff-flag holders reach this. Nobody can change their own
+    # staff flag, so the last staff account cannot lock itself out.
+    def update_staff_flags
+      added = []
+      removed = []
+      STAFF_FLAGS.each do |flag, label|
+        value = params[:user][flag]
+        next if value.nil?
+        next if flag == :is_bd_staff && @user.id == CurrentUser.id
+        wanted = value.to_s.truthy?
+        next if @user.send(flag) == wanted
+        @user.send("#{flag}=", wanted)
+        (wanted ? added : removed) << label
+      end
+      return if added.empty? && removed.empty?
+      @user.save!
+      ModAction.log(:user_staff_flags_change, { user_id: @user.id, added: added, removed: removed })
+    end
 
     def user_params(user)
       permitted_params = %i[profile_about profile_artinfo base_upload_limit enable_privacy_mode custom_title]

@@ -99,6 +99,7 @@ class ModAction < ApplicationRecord
     user_karma_free_toggle: { user_id: :integer, disabled: :boolean },
     user_uploads_toggle: { user_id: :integer, disabled: :boolean },
     user_flags_change: { user_id: :integer, added: :string, removed: :string },
+    user_staff_flags_change: { user_id: :integer, added: :string, removed: :string },
     user_level_change: { user_id: :integer, level: :string, level_was: :string },
     user_name_change: { user_id: :integer },
     totp_reset: { user_id: :integer },
@@ -131,6 +132,7 @@ class ModAction < ApplicationRecord
     ip_ban_create ip_ban_delete
     post_version_hide post_version_unhide
     totp_reset password_reset
+    user_staff_flags_change
     search_trend_blacklist_create search_trend_blacklist_update search_trend_blacklist_delete search_trend_blacklist_purge
   ].freeze
 
@@ -259,6 +261,11 @@ class ModAction < ApplicationRecord
 
       if !CurrentUser.is_staff? && %i[appeal_update].include?(action.to_sym)
         sanitized_values = sanitized_values.slice("appeal_id")
+      end
+
+      # Who holds the staff and auditor flags is admin-only.
+      if %i[user_staff_flags_change].include?(action.to_sym)
+        sanitized_values = sanitized_values.slice([])
       end
 
       sanitized_values

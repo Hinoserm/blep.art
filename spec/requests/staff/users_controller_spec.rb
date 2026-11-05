@@ -60,6 +60,27 @@ RSpec.describe Staff::UsersController do
       get edit_staff_user_path(user)
       expect(response).to have_http_status(:ok)
     end
+
+    it "does not show the staff and auditor flag fields to an admin without the staff flag" do
+      sign_in_as admin
+      get edit_staff_user_path(user)
+      expect(response.body).not_to include("user[is_bd_staff]")
+      expect(response.body).not_to include("user[is_bd_auditor]")
+    end
+
+    it "shows the staff and auditor flag fields to a staff-flag holder" do
+      sign_in_as bd_staff
+      get edit_staff_user_path(user)
+      expect(response.body).to include("user[is_bd_staff]")
+      expect(response.body).to include("user[is_bd_auditor]")
+    end
+
+    it "does not offer a staff-flag holder their own staff flag" do
+      sign_in_as bd_staff
+      get edit_staff_user_path(bd_staff)
+      expect(response.body).not_to include("user[is_bd_staff]")
+      expect(response.body).to include("You cannot change your own staff flag.")
+    end
   end
 
   # ---------------------------------------------------------------------------
@@ -267,6 +288,53 @@ RSpec.describe Staff::UsersController do
         banned_user = create(:banned_user)
         patch staff_user_path(banned_user), params: { user: { profile_about: "x", level: UserLevel::PRIVILEGED } }
         expect(banned_user.reload.level).not_to eq(UserLevel::PRIVILEGED)
+      end
+
+      it "grants the staff and auditor flags" do
+        patch staff_user_path(user), params: { user: { is_bd_staff: "true", is_bd_auditor: "true" } }
+        user.reload
+        expect(user.is_bd_staff?).to be true
+        expect(user.is_bd_auditor?).to be true
+      end
+
+      it "removes the staff and auditor flags" do
+        target = create(:bd_admin_user, is_bd_auditor: true)
+        patch staff_user_path(target), params: { user: { is_bd_staff: "false", is_bd_auditor: "false" } }
+        target.reload
+        expect(target.is_bd_staff?).to be false
+        expect(target.is_bd_auditor?).to be false
+      end
+
+      it "does not change its own staff flag" do
+        patch staff_user_path(bd_staff), params: { user: { is_bd_staff: "false" } }
+        expect(bd_staff.reload.is_bd_staff?).to be true
+      end
+
+      it "logs one protected mod action and no staff audit log entry" do
+        mod_actions = ModAction.where(action: "user_staff_flags_change").count
+        audit_logs = StaffAuditLog.count
+        patch staff_user_path(user), params: { user: { is_bd_auditor: "true" } }
+        expect(ModAction.where(action: "user_staff_flags_change").count).to eq(mod_actions + 1)
+        expect(StaffAuditLog.count).to eq(audit_logs)
+        logged = ModAction.where(action: "user_staff_flags_change").last
+        expect(logged.read_attribute(:values)).to include("user_id" => user.id, "added" => ["auditor"], "removed" => [])
+      end
+
+      it "logs nothing when the flags do not change" do
+        expect do
+          patch staff_user_path(user), params: { user: { is_bd_staff: "false", is_bd_auditor: "false" } }
+        end.not_to(change { ModAction.where(action: "user_staff_flags_change").count })
+      end
+    end
+
+    context "as an admin without the staff flag" do
+      before { sign_in_as admin }
+
+      it "ignores the staff and auditor flag params" do
+        patch staff_user_path(user), params: { user: { profile_about: "x", is_bd_staff: "true", is_bd_auditor: "true" } }
+        user.reload
+        expect(user.is_bd_staff?).to be false
+        expect(user.is_bd_auditor?).to be false
       end
     end
   end

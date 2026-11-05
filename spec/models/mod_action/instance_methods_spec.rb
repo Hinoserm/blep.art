@@ -31,6 +31,12 @@ RSpec.describe ModAction do
       expect(record.can_view?(member)).to be false
     end
 
+    it "returns false for a regular member viewing user_staff_flags_change" do
+      record = ModAction.log(:user_staff_flags_change, { user_id: 1, added: ["auditor"], removed: [] })
+      member = create(:user)
+      expect(record.can_view?(member)).to be false
+    end
+
     it "returns true for a regular member viewing a non-protected action" do
       record = ModAction.log(:user_feedback_create, { user_id: 1 })
       member = create(:user)
@@ -55,6 +61,18 @@ RSpec.describe ModAction do
       member = create(:user)
       result = CurrentUser.scoped(member, "127.0.0.1") { record.values }
       expect(result.keys).not_to include("secret_field")
+    end
+
+    it "returns the full values for an admin on user_staff_flags_change" do
+      record = ModAction.log(:user_staff_flags_change, { user_id: 1, added: ["staff"], removed: [] })
+      expect(record.values).to include("user_id" => 1, "added" => ["staff"], "removed" => [])
+    end
+
+    it "returns an empty hash for a non-admin staff member on user_staff_flags_change" do
+      record = ModAction.log(:user_staff_flags_change, { user_id: 1, added: ["staff"], removed: [] })
+      moderator = create(:moderator_user)
+      result = CurrentUser.scoped(moderator, "127.0.0.1") { record.values }
+      expect(result).to eq({})
     end
 
     it "returns an empty hash for a non-admin on ip_ban_create" do

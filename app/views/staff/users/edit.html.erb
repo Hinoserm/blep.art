@@ -11,6 +11,20 @@
           <label class="block" for="user_verified">Email Verified</label>
           <%= select_tag("user[verified]", options_for_select([["Yes", true], ["No", false]], @user.is_verified?)) %>
         </div>
+        <div class="input">
+          <label class="block" for="user_is_bd_staff">Staff flag</label>
+          <% if @user.id == CurrentUser.id %>
+            <i>You cannot change your own staff flag.</i>
+          <% else %>
+            <%= select_tag("user[is_bd_staff]", options_for_select([["Yes", true], ["No", false]], @user.is_bd_staff?)) %>
+          <% end %>
+          <span class="hint">Site owner level: can promote to admin, grant these flags, and reassign post ownership.</span>
+        </div>
+        <div class="input">
+          <label class="block" for="user_is_bd_auditor">Auditor flag</label>
+          <%= select_tag("user[is_bd_auditor]", options_for_select([["Yes", true], ["No", false]], @user.is_bd_auditor?)) %>
+          <span class="hint">Can read other users' private messages.</span>
+        </div>
       <% end %>
 
       <div class="input">
