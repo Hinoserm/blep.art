@@ -59,12 +59,12 @@
 
 <div class="report-reason report-unusual" id="report-reason-takedown" style="display: none;">
   <p>
-    Artists and character owners may request the permanent removal of their artwork by submitting a takedown request.<br />
+    Copyright owners, and people shown in an intimate image without consent, can request removal as described in the <a href="<%= takedown_static_path %>">takedown policy</a>.<br />
     If you would like to replace this post with a better version, please upload the new version separately, and <a href="<%= new_post_flag_path(post_flag: { post_id: @post.id }) %>">flag this one as inferior</a>.
   </p>
 
   <span class="report-unusual-buttons">
-    <a href="<%= new_takedown_path(post_id: @post.id) %>" class="st-button danger">Takedown</a>
+    <a href="<%= takedown_static_path %>" class="st-button danger">Takedown policy</a>
     <a href="<%= new_post_flag_path(post_flag: { post_id: @post.id }) %>" class="st-button">Flag</a>
   </span>
 </div>

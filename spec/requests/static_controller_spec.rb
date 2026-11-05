@@ -7,13 +7,6 @@ RSpec.describe StaticController do
   # Simple render actions (no authentication, no wiki page dependency)
   # ---------------------------------------------------------------------------
 
-  describe "GET /static/furid", skip: "FurID route not available in this fork" do
-    it "returns 200" do
-      get furid_path
-      expect(response).to have_http_status(:ok)
-    end
-  end
-
   describe "GET /static/theme" do
     it "returns 200" do
       get theme_path
@@ -94,7 +87,7 @@ RSpec.describe StaticController do
   end
 
   describe "GET /static/privacy" do
-    include_examples "a wiki page action", "/static/privacy", "e621:privacy_policy"
+    include_examples "a wiki page action", "/static/privacy", "blep:privacy_policy"
   end
 
   describe "GET /static/privacy_discordbot", skip: "Not available in this fork" do
@@ -102,16 +95,16 @@ RSpec.describe StaticController do
   end
 
   describe "GET /static/code_of_conduct" do
-    include_examples "a wiki page action", "/static/code_of_conduct", "e621:rules"
+    include_examples "a wiki page action", "/static/code_of_conduct", "blep:rules"
   end
 
 
   describe "GET /static/takedown" do
-    include_examples "a wiki page action", "/static/takedown", "e621:takedown"
+    include_examples "a wiki page action", "/static/takedown", "blep:takedown"
   end
 
   describe "GET /static/avoid_posting" do
-    include_examples "a wiki page action", "/static/avoid_posting", "e621:avoid_posting_notice"
+    include_examples "a wiki page action", "/static/avoid_posting", "blep:avoid_posting_notice"
   end
 
   # ---------------------------------------------------------------------------
@@ -315,7 +308,7 @@ RSpec.describe StaticController do
       context "when the wiki page exists" do
         before do
           CurrentUser.scoped(create(:admin_user)) do
-            create(:wiki_page, title: "e621:discord", body: "Join our Discord!")
+            create(:wiki_page, title: "blep:discord", body: "Join our Discord!")
           end
         end
 

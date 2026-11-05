@@ -173,14 +173,13 @@ module SiteMap
   group :tools, "Tools"
   page :tools, :news_updates, "News Updates"
   page :tools, :mascots, "Mascots"
-  # page :tools, :furid, "FurID"
   page :tools, :keyboard_shortcuts, "Keyboard Shortcuts"
   page :tools, :stats, "Stats"
   page :tools, :terms_of_use, "Terms of Use"
   page :tools, :privacy_policy, "Privacy Policy"
   page :tools, :code_of_conduct, "Code of Conduct"
   page :tools, :discord_post, "Discord",
-       gate: { inline: "account-age + flags (can_discord?)" }, visible: ->(u) { u.can_discord? }
+       gate: { inline: "account-age + flags (can_discord?)" }, visible: ->(u) { Danbooru.config.discord_site.present? && u.can_discord? }
   # page :tools, :privacy_discordbot, "Discord Bot Privacy Policy"
   page :tools, :help_pages, "Help Index"
 

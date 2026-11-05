@@ -22,11 +22,8 @@ class StaticController < ApplicationController
   end
 
   def avoid_posting
-    @page_name = "e621:avoid_posting_notice"
+    @page_name = "blep:avoid_posting_notice"
     @page = format_wiki_page(@page_name)
-  end
-
-  def furid
   end
 
   def not_found
