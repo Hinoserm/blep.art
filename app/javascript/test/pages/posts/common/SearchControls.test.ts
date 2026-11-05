@@ -27,4 +27,20 @@ describe("SearchControls", () => {
     document.getElementById("toggle-fullscreen").click();
     expect(document.body.dataset.stFullscreen).toBe("true");
   });
+
+  it("hides corner ribbons as soon as the box is unticked", async () => {
+    document.body.innerHTML = "<input type=\"checkbox\" id=\"ssc-corner-ribbons\">";
+    document.body.setAttribute("data-st-cornerribbons", "true");
+    const { SearchControls, LStorage } = await load();
+    void SearchControls.instance;
+    const box = document.getElementById("ssc-corner-ribbons") as HTMLInputElement;
+    expect(box.checked).toBe(true);
+
+    box.click();
+    expect(document.body.getAttribute("data-st-cornerribbons")).toBe("false");
+    expect(LStorage.Posts.CornerRibbons).toBe(false);
+
+    box.click();
+    expect(document.body.getAttribute("data-st-cornerribbons")).toBe("true");
+  });
 });
