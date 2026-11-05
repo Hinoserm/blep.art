@@ -1,4 +1,5 @@
 import ToastManager from "@/utility/Toast";
+import HTTP from "@/utility/HTTP";
 import TextUtils from "../../utility/TextUtils";
 
 let Blip = {};
@@ -30,7 +31,7 @@ Blip.quote = function (e) {
 
     $("#blip_response_to")[0].value = blipId;
   }).fail(function (data) {
-    ToastManager.alert(data.responseText);
+    ToastManager.alert(HTTP.xhrErrorMessage(data));
   });
 };
 

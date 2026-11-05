@@ -66,4 +66,16 @@ describe("HTTP", () => {
       expect(await HTTP.errorMessage(htmlResponse(502), "Upstream down")).toBe("Upstream down");
     });
   });
+
+  it("xhrErrorMessage never passes an HTML error page through to a toast", async () => {
+    const HTTP = await freshHTTP();
+    const xhr = (fields: object) => fields as JQuery.jqXHR;
+    expect(HTTP.xhrErrorMessage(xhr({ status: 422, responseJSON: { reason: "Body is too long" } }))).toBe("Body is too long");
+    expect(HTTP.xhrErrorMessage(xhr({ status: 422, responseText: "Already deleted" }))).toBe("Already deleted");
+
+    const cloudflare = "<!DOCTYPE html><html><head><style>html{font-size:20px}</style></head><body>502 Bad gateway</body></html>";
+    expect(HTTP.xhrErrorMessage(xhr({ status: 502, statusText: "Bad Gateway", responseText: cloudflare }))).toBe("502 Bad Gateway");
+    expect(HTTP.xhrErrorMessage(xhr({ status: 502, responseText: cloudflare }), "Failed to approve the replacement."))
+      .toBe("Failed to approve the replacement.");
+  });
 });

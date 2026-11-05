@@ -103,7 +103,7 @@ async function fetchTagPreview() {
   try {
     // Form-urlencoded so Rails reads params[:tags]; CSRF added by HTTP.post.
     const response = await HTTP.post('/tags/preview.json', new URLSearchParams({ tags: missing.join(' ') }));
-    if (!response.ok) throw new Error(await response.text().catch(() => ""));
+    if (!response.ok) throw new Error(await HTTP.errorMessage(response));
     const result = await response.json();
     for (const tag of result)
       tagCache[tag.name] = tag;

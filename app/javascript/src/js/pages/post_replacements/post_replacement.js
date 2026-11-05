@@ -1,4 +1,5 @@
 import ToastManager from "@/utility/Toast";
+import HTTP from "@/utility/HTTP";
 
 let PostReplacement = {};
 
@@ -67,7 +68,7 @@ PostReplacement.approve = function (id, penalize_current_uploader) {
       replace_row($row, html);
     })
     .fail((data) => {
-      const msg = data.responseText?.trim() || "Failed to approve the replacement.";
+      const msg = HTTP.xhrErrorMessage(data, "Failed to approve the replacement.");
       ToastManager.alert(msg);
       revert_processing($row);
     });
@@ -88,7 +89,7 @@ PostReplacement.reject = function (id) {
       replace_row($row, html);
     })
     .fail((data) => {
-      const msg = data.responseText?.trim() || "Failed to reject the replacement.";
+      const msg = HTTP.xhrErrorMessage(data, "Failed to reject the replacement.");
       ToastManager.alert(msg);
       revert_processing($row);
     });
@@ -109,7 +110,7 @@ PostReplacement.promote = function (id) {
       replace_row($row, html);
     })
     .fail((data) => {
-      const msg = data.responseText?.trim() || "Failed to promote the replacement.";
+      const msg = HTTP.xhrErrorMessage(data, "Failed to promote the replacement.");
       ToastManager.alert(msg);
       revert_processing($row);
     });
@@ -130,7 +131,7 @@ PostReplacement.toggle_penalize = function ($target) {
       replace_row($row, html);
     })
     .fail((data) => {
-      const msg = data.responseText?.trim() || "Failed to toggle penalization.";
+      const msg = HTTP.xhrErrorMessage(data, "Failed to toggle penalization.");
       ToastManager.alert(msg);
       $target.removeClass("disabled-link");
     });
@@ -150,7 +151,7 @@ PostReplacement.destroy = function (id) {
       $row.remove();
     })
     .fail((data) => {
-      const msg = data.responseText?.trim() || "Failed to destroy the replacement.";
+      const msg = HTTP.xhrErrorMessage(data, "Failed to destroy the replacement.");
       ToastManager.alert(msg);
       revert_processing($row);
     });
@@ -184,7 +185,7 @@ PostReplacement.transfer = function (id) {
       }
     })
     .fail((data) => {
-      const msg = data.responseText?.trim() || "Failed to transfer the replacement.";
+      const msg = HTTP.xhrErrorMessage(data, "Failed to transfer the replacement.");
       ToastManager.alert(msg);
       revert_processing($row);
     });

@@ -1,4 +1,5 @@
 import ToastManager from "@/utility/Toast";
+import HTTP from "@/utility/HTTP";
 import TimestampSwitch from "@/components/TimestampSwitch";
 import DTextFormatter from "@/components/DTextFormatter";
 import TextUtils from "@/utility/TextUtils";
@@ -128,7 +129,7 @@ Comment.quote = function (e) {
     const $textarea = $div.find("textarea");
     TextUtils.processQuote($textarea, data.body, parent.data("creator"), parent.data("creator-id"));
   }).fail(function (data) {
-    ToastManager.alert(data.responseText);
+    ToastManager.alert(HTTP.xhrErrorMessage(data));
   });
 };
 

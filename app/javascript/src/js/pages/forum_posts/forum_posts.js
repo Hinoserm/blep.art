@@ -1,4 +1,5 @@
 import ToastManager from "@/utility/Toast";
+import HTTP from "@/utility/HTTP";
 import TextUtils from "@/utility/TextUtils";
 
 let ForumPost = {};
@@ -54,7 +55,7 @@ ForumPost.quote = function (e) {
       $("#topic-response")[0].scrollIntoView();
     }, 15);
   }).fail(function (data) {
-    ToastManager.alert(data.responseText);
+    ToastManager.alert(HTTP.xhrErrorMessage(data));
   });
 };
 

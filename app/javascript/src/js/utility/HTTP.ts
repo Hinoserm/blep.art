@@ -52,20 +52,44 @@ export default class HTTP {
     let body: any = null;
     try { body = await response.json(); } catch { /* not JSON */ }
 
-    if (body && typeof body === "object") {
-      for (const key of ["message", "reason"])
-        if (typeof body[key] === "string" && body[key]) return body[key];
-
-      const errors = body.errors;
-      const messages: string[] = Array.isArray(errors)
-        ? errors
-        : errors && typeof errors === "object" ? Object.values(errors).flat() : [];
-      const text = messages.filter((msg) => typeof msg === "string" && msg).join("; ");
-      if (text) return text;
-    }
-
+    const message = HTTP.messageFromBody(body);
+    if (message) return message;
     if (response.status === 404) return "Not Found";
     return fallback ?? `${response.status} ${response.statusText ?? ""}`.trim();
+  }
+
+  /**
+   * The same, for a failed jQuery `$.ajax` request. A short plain-text body is used as it
+   * is, since some endpoints answer with one. An HTML body never is: toasts render their
+   * message as HTML, and a proxy error page (such as Cloudflare's 502) brings its own
+   * stylesheet, which would restyle the whole page.
+   */
+  static xhrErrorMessage (xhr: JQuery.jqXHR, fallback?: string): string {
+    let body: any = xhr.responseJSON;
+    if (body === undefined) {
+      try { body = JSON.parse(xhr.responseText ?? ""); } catch { /* not JSON */ }
+    }
+    const message = HTTP.messageFromBody(body);
+    if (message) return message;
+
+    const text = (xhr.responseText ?? "").trim();
+    if (text && !text.includes("<") && text.length <= 500) return text;
+    if (xhr.status === 404) return "Not Found";
+    return fallback ?? (`${xhr.status || ""} ${xhr.statusText ?? ""}`.trim() || "Request failed");
+  }
+
+  // `render_expected_error` (`message` / `reason`) and responders validation errors
+  // (`errors` as an array or an attribute hash).
+  private static messageFromBody (body: any): string | null {
+    if (!body || typeof body !== "object") return null;
+    for (const key of ["message", "reason"])
+      if (typeof body[key] === "string" && body[key]) return body[key];
+
+    const errors = body.errors;
+    const messages: string[] = Array.isArray(errors)
+      ? errors
+      : errors && typeof errors === "object" ? Object.values(errors).flat() : [];
+    return messages.filter((msg) => typeof msg === "string" && msg).join("; ") || null;
   }
 
   // The JSON sugar only resolves on 2xx (an error body could still be valid JSON,
